@@ -28,17 +28,18 @@ tar -xvf youtubeuploader_linux_amd64.tar.gz
 mv youtubeuploader_linux_amd64 /usr/local/bin/youtubeuploader
 ```
 
-### Sample video
-
-```bash
-wget https://download.samplelib.com/mp4/sample-5s.mp4
-```
 
 ### AutoVOD
 
 ```bash
 git clone "https://github.com/jenlys/AutoVOD.git"
 cd AutoVOD
+```
+
+### Sample video
+
+```bash
+wget https://download.samplelib.com/mp4/sample-5s.mp4
 ```
 
 ## Setup
