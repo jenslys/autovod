@@ -28,7 +28,6 @@ tar -xvf youtubeuploader_linux_amd64.tar.gz
 mv youtubeuploader_linux_amd64 /usr/local/bin/youtubeuploader
 ```
 
-
 ### AutoVOD
 
 ```bash
@@ -54,9 +53,9 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 1. Run `youtubeuploader -headlessAuth -filename sample-5s.mp4`
 1. Copy-and-paste the URL displayed and open that in your browser.
 1. Copy the resulting authorisation code and paste it into the `youtubeuploader` prompt: _"Enter authorisation code here:"_
-1. If everthing goes correctly, it will now upload the sample video to your YouTube channel.
+1. If everthing goes correctly, it will upload the sample video the provided YouTube channel.
 
-**NOTICE: To be able to upload videos as either "Unlisted or Public", you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from youtube for your project.** **Without an audit your videos will be locked as privat.**
+**NOTICE: To be able to upload videos as either "Unlisted or Public", you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from youtube for your project.** **Without an audit your videos will be locked as private.**
 
 ## Usage
 
