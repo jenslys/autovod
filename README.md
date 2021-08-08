@@ -38,7 +38,7 @@ cd AutoVOD
 ### Sample video
 
 ```bash
-wget https://download.samplelib.com/mp4/sample-5s.mp4
+wget -c -O sample.mp4 https://download.samplelib.com/mp4/sample-5s.mp4
 ```
 
 ## Setup
@@ -50,7 +50,7 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 1. Enable the [YouTube Data API (APIs & Auth -> Libary)](https://console.cloud.google.com/apis/library/youtube.googleapis.com)
 1. Go to the [Consent Screen](https://console.cloud.google.com/apis/credentials/consent) section, setup an external application, fill in your information, enable the **".../auth/youtube.upload"** scope. Then save.
 1. Go to the [Credentials](https://console.cloud.google.com/apis/api/youtube.googleapis.com/credentials) section, click "Create credentials" and select "OAuth client ID", select Application Type 'Web Application'; once created click the download (JSON) button in the list and saving it as `client_secrets.json`
-1. Run `youtubeuploader -headlessAuth -filename sample-5s.mp4`
+1. Run `youtubeuploader -headlessAuth -filename sample.mp4`
 1. Copy-and-paste the URL displayed and open that in your browser.
 1. Copy the resulting authorisation code and paste it into the `youtubeuploader` prompt: _"Enter authorisation code here:"_
 1. If everthing goes correctly, it will upload the sample video the provided YouTube channel.
