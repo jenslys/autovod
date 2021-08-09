@@ -8,7 +8,7 @@ do
 	STREAMER_NAME=$TWITCH_USER
 	TIME_DATE=$(date +"%m.%d.%y [%r]") # 07.21.21 [11:13:21 PM]
 	VIDEO_VISIBILITY="unlisted" # unlisted, private, public
-	VIDEO_DESCRIPTION="Uploaded using AutoVOD"
+	VIDEO_DESCRIPTION="Watch $STREAMER_NAME live on https://twitch.tv/$STREAMER_NAME \n\nUploaded using https://github.com/jenslys/AutoVOD"
 	STREAMLINK_OPTION="best --hls-duration 12:00:00 --twitch-disable-hosting --twitch-disable-reruns -O" 	# Upload limit is set to 12 hours, becauase of youtube's upload limit.
 
 	# Create the input file. Contains upload parameters
