@@ -1,7 +1,7 @@
 # AutoVOD
 
-This script was created to record a broadcast from Twitch and upload it on YouTube, in order to watch the stream later.
-Broadcasts are downloaded in best quality, no transcoding, and sent directly to youtube, meaning no video is stored on the disk and the stream is directly sent back to YouTube. The script checks if the provided broadcaster is live every 1 min.
+This script was created to record a broadcast from Twitch and upload it on YouTube, to watch the stream later.
+Broadcasts are downloaded in the best quality, no transcoding, and sent directly to youtube, meaning no video is stored on the disk and the stream is directly sent back to YouTube.
 
 ## Installation
 
