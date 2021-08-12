@@ -1,7 +1,7 @@
 # AutoVOD
 
-This script was created to record a broadcast from Twitch and upload it on YouTube, to watch the stream later.
-Broadcasts are downloaded in the best quality, no transcoding, and sent directly to youtube, meaning no video is stored on the disk and the stream is directly sent back to YouTube.
+This script was created to record a broadcast from Twitch and upload it in realtime to YouTube.
+Broadcasts are downloaded in the best quality, no transcoding, and sent directly to YouTube, meaning no video is stored on the disk and the stream is directly sent back to YouTube.
 
 ## Installation
 
@@ -52,10 +52,10 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 1. Go to the [Credentials](https://console.cloud.google.com/apis/api/youtube.googleapis.com/credentials) section, click "Create credentials" and select "OAuth client ID", select Application Type 'Web Application'; once created click the download (JSON) button in the list and saving it as `client_secrets.json`
 1. Run `youtubeuploader -headlessAuth -filename sample.mp4`
 1. Copy-and-paste the URL displayed and open that in your browser.
-1. Copy the resulting authorisation code and paste it into the `youtubeuploader` prompt: _"Enter authorisation code here:"_
-1. If everthing goes correctly, it will upload the sample video the provided YouTube channel.
+1. Copy the resulting authorization code and paste it into the `youtubeuploader` prompt: _"Enter authorization code here:"_
+1. If everything goes correctly, it will upload the sample video the provided YouTube channel.
 
-**NOTICE: To be able to upload videos as either "Unlisted or Public", you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from youtube for your project.** **Without an audit your videos will be locked as private.**
+**NOTICE: To be able to upload videos as either "Unlisted or Public", you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube for your project.** **Without an audit your videos will be locked as private.**
 
 ## Usage
 
@@ -82,6 +82,6 @@ pm2 status
 
 ## Credit
 
-- Orginal script by [arnicel](https://github.com/arnicel/autoTwitchToYouTube)
+- Original script by [arnicel](https://github.com/arnicel/autoTwitchToYouTube)
 - YoutubeUploader by [porjo](https://github.com/porjo/youtubeuploader)
 - Streamlink by [streamlink](https://github.com/streamlink/streamlink)
