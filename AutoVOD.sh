@@ -13,8 +13,6 @@ do
 	VIDEO_DURATION="12:00:00" # XX:XX:XX (Youtube has a upload limit set to 12 hours per video)
 	SPLIT_INTO_PARTS="true" # If you want to split the videos into multiple parts. if this is enabled, VIDEO_DURATION is ignored
 	SPLIT_VIDEO_DURATION="05:59:59"
-	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-reruns -O" # https://streamlink.github.io/cli.html#twitch
-
 	if [[ "$SPLIT_INTO_PARTS" == "true" ]]; then
 		VIDEO_DURATION=$SPLIT_VIDEO_DURATION
 		if [[ "$TIME_DATE" == "$TIME_DATE_CHECK"  ]]; then
@@ -24,6 +22,8 @@ do
 		  CURRENT_PART=1
 		fi
 	fi
+	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-reruns -O" # https://streamlink.github.io/cli.html#twitch
+
 
 	# Create the input file. Contains upload parameters
 	echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${STREAMER_NAME}"'"]}' > /tmp/input.$STREAMER_NAME
