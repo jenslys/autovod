@@ -1,7 +1,12 @@
-# AutoVOD
+<p align="center"><img src="https://i.imgur.com/P2Ks26s.png" width="200"></p>
 
-This script was created to record a broadcast from Twitch and upload it in realtime to YouTube.
-Broadcasts are downloaded in the best quality, no transcoding, and sent directly to YouTube, meaning no video is stored on the disk and the stream is directly sent back to YouTube.
+<h1 align="center">AutoVOD</h1>
+<p align="center">
+<a href="https://img.shields.io/github/v/release/jenslys/AutoVOD.svg"></a>
+<a href="https://github.com/jenslys/AutoVOD/releases/"><img src="https://img.shields.io/github/v/release/jenslys/AutoVOD.svg" alt="Releases"></a>
+<p align="center">This script was created to record a broadcast from Twitch and upload it to YouTube.
+Broadcasts are downloaded in the best quality, no transcoding, and sent directly to YouTube, meaning no video is stored on the disk and the stream is directly sent back to YouTube.</p>
+</p>
 
 ## Installation
 
