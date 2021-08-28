@@ -1,5 +1,10 @@
 #!/bin/bash
 
+echo "Starting AutoVOD..."
+echo "Using Twitch user: $TWITCH_USER"
+echo ""
+echo ""
+
 # Every minute, try to download the Twitch stream, and send it to YouTube.
 # Everything through the pipe, no video file is created
 while true
