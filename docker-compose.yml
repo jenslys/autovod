@@ -1,0 +1,6 @@
+services:
+  autovod:
+    build: .
+    command: sh /app/AutoVOD.sh
+    volumes:
+      - ./:/app
