@@ -54,11 +54,12 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 1. Create a new project
 1. Enable the [YouTube Data API (APIs & Auth -> Libary)](https://console.cloud.google.com/apis/library/youtube.googleapis.com)
 1. Go to the [Consent Screen](https://console.cloud.google.com/apis/credentials/consent) section, setup an external application, fill in your information, enable the **".../auth/youtube.upload"** scope. Then save.
-1. Go to the [Credentials](https://console.cloud.google.com/apis/api/youtube.googleapis.com/credentials) section, click "Create credentials" and select "OAuth client ID", select Application Type 'Web Application'; once created click the download (JSON) button in the list and saving it as `client_secrets.json`
-1. Run `youtubeuploader -headlessAuth -filename sample.mp4`
-1. Copy-and-paste the URL displayed and open that in your browser.
-1. Copy the resulting authorization code and paste it into the `youtubeuploader` prompt: _"Enter authorization code here:"_
-1. If everything goes correctly, it will upload the sample video to the provided YouTube channel.
+1. Go to the [Credentials](https://console.cloud.google.com/apis/api/youtube.googleapis.com/credentials) section, click "Create credentials" and select "OAuth client ID", select Application Type 'Web Application'. Add a 'Authorised redirect URI' of `http://localhost:8080/oauth2callback`
+1. once created click the download (JSON) button in the list and saving it as `client_secrets.json`
+3. Run `youtubeuploader -headlessAuth -filename sample.mp4`
+4. Copy-and-paste the URL displayed and open that in your browser.
+5. Copy the resulting authorization code and paste it into the `youtubeuploader` prompt: _"Enter authorization code here:"_
+6. If everything goes correctly, it will upload the sample video to the provided YouTube channel.
 
 **NOTICE: To be able to upload videos as either "Unlisted or Public", you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube for your project.** **Without an audit your videos will be locked as private.**
 
