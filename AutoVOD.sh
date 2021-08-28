@@ -5,7 +5,7 @@
 while true
 do
 	# Define some variables
-	STREAMER_NAME=$TWITCH_USER # Dont change this
+	STREAMER_NAME=$2 # Dont change this
 	TIME_DATE=[$(date +"%m.%d.%y")] # [08.10.21]
 	VIDEO_VISIBILITY="unlisted" # unlisted, private, public
 	VIDEO_DESCRIPTION="Watch $STREAMER_NAME live on https://twitch.tv/$STREAMER_NAME \n\nUploaded using https://github.com/jenslys/AutoVOD"
