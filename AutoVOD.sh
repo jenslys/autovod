@@ -22,14 +22,14 @@ do
 		  CURRENT_PART=1
 		fi
 	fi
-	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-reruns -O" # https://streamlink.github.io/cli.html#twitch
+	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
 
 
 	# Create the input file. Contains upload parameters
 	echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${STREAMER_NAME}"'"]}' > /tmp/input.$STREAMER_NAME
 
 	# Start streamlink and youtubeuploader
-	streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS 2>/dev/null | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$TIME_DATE
+	streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$TIME_DATE
 
 	sleep 1m
 done
