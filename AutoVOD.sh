@@ -1,5 +1,10 @@
 #!/bin/bash
 
+echo "Starting AutoVOD..."
+echo "Using Twitch user: $TWITCH_USER"
+echo ""
+echo ""
+
 # Every minute, try to download the Twitch stream, and send it to YouTube.
 # Everything through the pipe, no video file is created
 while true
@@ -24,6 +29,7 @@ do
 	fi
 	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
 
+	echo "Checking twitch.tv/$STREAMER_NAME for a stream."
 
 	# Create the input file. Contains upload parameters
 	echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${STREAMER_NAME}"'"]}' > /tmp/input.$STREAMER_NAME
@@ -31,5 +37,6 @@ do
 	# Start streamlink and youtubeuploader
 	streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$TIME_DATE
 
+	echo "Trying again in 1 minute"
 	sleep 1m
 done
