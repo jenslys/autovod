@@ -10,14 +10,14 @@ echo ""
 while true
 do
 	# Define some variables
-	STREAMER_NAME=$TWITCH_USER # Dont change this
+	STREAMER_NAME=$2 # Dont change this
 	TIME_DATE=[$(date +"%m.%d.%y")] # [08.10.21]
 	VIDEO_VISIBILITY="unlisted" # unlisted, private, public
 	VIDEO_DESCRIPTION="Watch $STREAMER_NAME live on https://twitch.tv/$STREAMER_NAME \n\nUploaded using https://github.com/jenslys/AutoVOD"
 	VIDEO_TITLE=$TIME_DATE
 	VIDEO_DURATION="12:00:00" # XX:XX:XX (Youtube has a upload limit set to 12 hours per video)
 	SPLIT_INTO_PARTS="true" # If you want to split the videos into multiple parts. (if this is enabled, VIDEO_DURATION is ignored)
-	SPLIT_VIDEO_DURATION="05:59:59"
+	SPLIT_VIDEO_DURATION="06:00:00"
 	if [[ "$SPLIT_INTO_PARTS" == "true" ]]; then
 		VIDEO_DURATION=$SPLIT_VIDEO_DURATION
 		if [[ "$TIME_DATE" == "$TIME_DATE_CHECK"  ]]; then
