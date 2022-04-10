@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Starting AutoVOD..."
-echo "Using Twitch user: $2"
+echo "Using Twitch user: $TWITCH_USER"
 echo ""
 echo ""
 
