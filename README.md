@@ -82,10 +82,18 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 
 ## Usage
 
-### Define the username and start AutoVOD
+### Define the Twitch Username
+
+This is the name of the Twitch user whose broadcast will be automatically uploaded to YouTube.
 
 ```bash
-pm2 start AutoVOD.sh --name usernamehere
+export TWITCH_USER=username
+```
+
+### Start AutoVOD
+
+```bash
+pm2 start AutoVOD.sh --name $TWITCH_USER
 pm2 save
 ```
 
