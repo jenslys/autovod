@@ -45,7 +45,7 @@ pip3 install --upgrade streamlink
 #### YouTubeUploader
 
 ```bash
-wget https://github.com/porjo/youtubeuploader/releases/latest/download/youtubeuploader_linux_amd64.tar.gz
+wget https://github.com/porjo/youtubeuploader/releases/download/21.07/youtubeuploader_linux_amd64.tar.gz
 tar -xvf youtubeuploader_linux_amd64.tar.gz && rm youtubeuploader_linux_amd64.tar.gz
 mv youtubeuploader_linux_amd64 /usr/local/bin/youtubeuploader
 ```
@@ -70,7 +70,7 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 1. Create an account on [Google Developers Console](https://console.developers.google.com)
 1. Create a new project
 1. Enable the [YouTube Data API (APIs & Auth -> Libary)](https://console.cloud.google.com/apis/library/youtube.googleapis.com)
-1. Go to the [Consent Screen](https://console.cloud.google.com/apis/credentials/consent) section, setup an external application, fill in your information, enable the **".../auth/youtube.upload"** scope. Then save.
+1. Go to the [Consent Screen](https://console.cloud.google.com/apis/credentials/consent) section, setup an external application, fill in your information and add the users that are going to be using the app (Channels you are uploading videos to). Enable the **".../auth/youtube.upload"** scope. Then save.
 1. Go to the [Credentials](https://console.cloud.google.com/apis/api/youtube.googleapis.com/credentials) section, click "Create credentials" and select "OAuth client ID", select Application Type 'Web Application'. Add a 'Authorised redirect URI' of `http://localhost:8080/oauth2callback`
 1. Once created click the download (JSON) button in the list and saving it as `client_secrets.json`
 1. Run `youtubeuploader -headlessAuth -filename sample.mp4`
