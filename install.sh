@@ -17,9 +17,9 @@ printf "${g}[$now] Installing Streamlink${c}\n"
 pip3 install --upgrade streamlink
 
 printf "${g}[$now] Installing YouTubeUploader${c}\n"
-wget https://github.com/porjo/youtubeuploader/releases/latest/download/youtubeuploader_linux_amd64.tar.gz
-tar -xvf youtubeuploader_linux_amd64.tar.gz && rm youtubeuploader_linux_amd64.tar.gz
-mv youtubeuploader_linux_amd64 /usr/local/bin/youtubeuploader
+wget https://github.com/porjo/youtubeuploader/releases/download/22.03/youtubeuploader_22.03_Linux_x86_64.tar.gz
+tar -xvf youtubeuploader_22.03_Linux_x86_64.tar.gz && rm youtubeuploader_22.03_Linux_x86_64.tar.gz
+mv youtubeuploader_22.03_Linux_x86_64 /usr/local/bin/youtubeuploader
 
 printf "${g}[$now] Installing AutoVOD${c}\n"
 git clone https://github.com/jenslys/autovod.git && cd autovod
