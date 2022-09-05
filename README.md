@@ -70,11 +70,11 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 1. Create an account on [Google Developers Console](https://console.developers.google.com)
 1. Create a new project
 1. Enable the [YouTube Data API (APIs & Auth -> Libary)](https://console.cloud.google.com/apis/library/youtube.googleapis.com)
-1. Go to the [Consent Screen](https://console.cloud.google.com/apis/credentials/consent) section, setup an external application, fill in your information and add the users that are going to be using the app (Channels you are uploading videos to). Enable the **".../auth/youtube.upload"** scope. Then save.
+1. Go to the [Consent Screen](https://console.cloud.google.com/apis/credentials/consent) section, setup an external application, fill in your information and add the user/s that are going to be using the app (Channel/s you are uploading videos to). Enable the **".../auth/youtube.upload"** scope. Then save.
 1. Go to the [Credentials](https://console.cloud.google.com/apis/api/youtube.googleapis.com/credentials) section, click "Create credentials" and select "OAuth client ID", select Application Type 'Web Application'. Add a 'Authorised redirect URI' of `http://localhost:8080/oauth2callback`
 1. Once created click the download (JSON) button in the list and saving it as `client_secrets.json`
 1. Getting token from YouTube:
-    1. Due to recent changes to Google/Youtubes TOS, if you are running this utility for the first time and want to run it on a Headless server, you have to first run the tool on your local machine and then simply copy the token file along with `youtubeuploader` and `client_secrets.json` to the remote host.
+    1. Due to recent changes to [Google TOS](https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html#disallowed-oob), if you are running this utility for the first time and want to run it on a Headless server, you have to first run the tool on your local machine (Somewhere with a web browser) and then simply copy the token file along with `youtubeuploader` and `client_secrets.json` to the remote host.
 
         ```bash
         youtubeuploader -filename sample.mp4
