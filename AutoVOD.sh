@@ -9,7 +9,7 @@ echo ""
 # Everything through the pipe, no video file is created.
 
 while true; do
-	STREAMER_NAME=$TWITCH_USER                                            #! Dont change this
+	STREAMER_NAME=$TWITCH_USER                                            #! Dont change this.
 	TIME_DATE=[$(date +"%m.%d.%y")]                                       # Preview example: [08.10.21]
 	VIDEO_VISIBILITY="unlisted"                                           #* Options: unlisted, private, public
 	VIDEO_DESCRIPTION="Uploaded using https://github.com/jenslys/AutoVOD" # YouTube video description.

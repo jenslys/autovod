@@ -1,14 +1,14 @@
-<p align="center"><img src="https://i.imgur.com/P2Ks26s.png" width="150"></p>
+![AutoVOD Icon](https://cdn.lystad.io/autovod_icon.png)
 
-<h1 align="center">AutoVOD</h1>
-<p align="center">
-<a href="https://img.shields.io/github/v/release/jenslys/AutoVOD.svg"></a>
-<a href="https://github.com/jenslys/AutoVOD/releases/"><img src="https://img.shields.io/github/v/release/jenslys/AutoVOD.svg" alt="Releases"></a>
-<p align="center">This script was created to record broadcasts from Twitch and upload it to YouTube.
-Broadcasts are downloaded in the best quality, no transcoding, and sent directly to YouTube, meaning no video is stored on the disk and the stream is directly sent back to YouTube.</p>
-</p>
+# AutoVOD
 
-### Table of contents
+![Releases](https://img.shields.io/github/v/release/jenslys/AutoVOD.svg)
+
+This script lets you automatically record and upload broadcasts from Twitch and upload it directly to YouTube. Broadcasts are downloaded in the best quality available, no transcoding, and sent directly to YouTube, meaning no video is stored on the disk and the stream is directly sent back to YouTube.
+
+The script checks every minute if the selected streamer is live, if the streamer is; it starts immediately sending/uploading the stream to YouTube. After the stream is finished, the video gets processed by YouTube and made public.
+
+## Table of contents
 
 - [Standalone Installation](#standalone-installation)
   - [Automatic Installation](#automatic-installation)
@@ -74,11 +74,13 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 1. Go to the [Credentials](https://console.cloud.google.com/apis/api/youtube.googleapis.com/credentials) section, click "Create credentials" and select "OAuth client ID", select Application Type 'Web Application'. Add a 'Authorised redirect URI' of `http://localhost:8080/oauth2callback`
 1. Once created click the download (JSON) button in the list and saving it as `client_secrets.json`
 1. Getting token from YouTube:
-    1. Due to recent changes to [Google TOS](https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html#disallowed-oob), if you are running this utility for the first time and want to run it on a Headless server, you have to first run the tool on your local machine (Somewhere with a web browser) and then simply copy the token file along with `youtubeuploader` and `client_secrets.json` to the remote host.
+    1. Due to [recent changes](https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html#disallowed-oob) to the Google TOS, if you are running this utility for the first time and want to run it on a Headless server, you have to first run the tool on your local machine (Somewhere with a web browser)
 
         ```bash
         youtubeuploader -filename sample.mp4
         ```
+
+    1. and then simply copy the token file along with `youtubeuploader` and `client_secrets.json` to the remote host.
 
 **Note**
 To be able to upload videos as either "Unlisted or Public", you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube for your project. Without an audit your videos will be locked as private.
@@ -111,4 +113,4 @@ pm2 status
 - Original script by [arnicel](https://github.com/arnicel/autoTwitchToYouTube)
 - YoutubeUploader by [porjo](https://github.com/porjo/youtubeuploader)
 - Streamlink by [streamlink](https://github.com/streamlink/streamlink)
-- Icon by [octaviotti](https://macosicons.com/u/octaviotti)
+- Icon by [xyaia](https://macosicons.com/#/u/xyaia)
