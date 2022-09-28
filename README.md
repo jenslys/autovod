@@ -15,6 +15,7 @@ The script checks every minute if the selected streamer is live, if the streamer
   - [Manual Installation](#manual-installation)
 - [Setup](#setup)
 - [Usage](#usage)
+- [Docker](#using-docker)
 - [Credit](#credit)
 
 ## Standalone Installation
