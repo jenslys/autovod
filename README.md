@@ -108,6 +108,17 @@ pm2 save
 pm2 status
 ```
 
+## Using docker
+
+This script can be used inside a docker container. To build a container, first execute all Setup-Steps, then build the image:
+```bash
+docker build --build-arg TWITCH_USER=<your twitch username> -t autovod .
+```
+You can now run this container
+```bash
+docker run -d autovod 
+```
+
 ## Credit
 
 - Original script by [arnicel](https://github.com/arnicel/autoTwitchToYouTube)
