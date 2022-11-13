@@ -64,6 +64,11 @@ cd autovod
 wget -c -O sample.mp4 https://download.samplelib.com/mp4/sample-5s.mp4
 ```
 
+#### Note
+Daily uploading high quality files/streams to a server may be resource intensive, hence i would recommend using a hosting provider that offers large or unmetered amount of bandwith. Server resource exhaustion may cause vods to fail uploading.
+
+I would recommend [Terrahost](https://terrahost.com/virtual-servers) <sub><sup>(Not sponsored)</sup></sub><br> They offer budget VPS with unmetered* bandwidth.
+
 ## Setup
 
 Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
