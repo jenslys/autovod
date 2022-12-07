@@ -8,6 +8,17 @@ echo ""
 # Every minute, try to download the Twitch stream, and send it to YouTube.
 # Everything through the pipe, no video file is created.
 
+function getStreamTitle() {
+	json=$(curl -s https://twitch-api-wrapper.vercel.app/title/$1) # https://github.com/jenslys/twitch-api-wrapper
+	if [ "$json" = "[]" ]; then
+		echo "Stream is offline"
+	elif [ "$json" = "Too many requests, please try again later." ]; then
+		echo "Too many API requests"
+	else
+		echo "$json" | jq -r '.streamTitle'
+	fi
+}
+
 while true; do
 	STREAMER_NAME=$TWITCH_USER                                            #! Dont change this.
 	TIME_DATE=[$(date +"%m.%d.%y")]                                       # Preview example: [08.10.21]
@@ -17,7 +28,8 @@ while true; do
 	VIDEO_DURATION="12:00:00"                                             # XX:XX:XX (YouTube has a upload limit of 12 hours per video).
 	VIDEO_PLAYLIST="$STREAMER_NAME VODs"                                  # Playlist to upload to.
 	SPLIT_INTO_PARTS="false"                                              # If you want to split the video into parts, set this to true. (if this is enabled VIDEO_DURATION is ignored).
-	SPLIT_VIDEO_DURATION="06:00:00"
+	SPLIT_VIDEO_DURATION="06:00:00"                                       # Duration of each part. (XX:XX:XX)
+	STREAM_TITLE=$(getStreamTitle "$STREAMER_NAME")                       #* Optional variable you can add to VIDEO_TITLE if you want to display the stream title.
 
 	# Splitting the stream into parts (If enabled)
 	if [[ "$SPLIT_INTO_PARTS" == "true" ]]; then
