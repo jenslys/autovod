@@ -1,15 +1,13 @@
-FROM ubuntu:22.04
+FROM alpine:3.14
 
 # Upgrade the system and install dependencies
 
-RUN	apt-get update &&\
-	apt-get upgrade -y &&\
-	apt-get install -y --no-install-recommends \
-	python3-pip tar wget
+RUN	apk add --no-cache --upgrade python3 tar wget bash
+RUN	python3 -m ensurepip
 
-RUN	pip3 install --upgrade streamlink
-RUN	wget https://github.com/porjo/youtubeuploader/releases/download/22.03/youtubeuploader_22.03_Linux_x86_64.tar.gz
-RUN	tar -xvf youtubeuploader_22.03_Linux_x86_64.tar.gz && rm youtubeuploader_22.03_Linux_x86_64.tar.gz &&\
+RUN 	pip3 install --upgrade streamlink 
+RUN 	wget https://github.com/porjo/youtubeuploader/releases/download/22.03/youtubeuploader_22.03_Linux_x86_64.tar.gz 
+RUN 	tar -xvf youtubeuploader_22.03_Linux_x86_64.tar.gz && rm youtubeuploader_22.03_Linux_x86_64.tar.gz &&\
 	mv youtubeuploader /usr/local/bin/youtubeuploader
 
 # Copy the required files
