@@ -15,7 +15,7 @@ function getStreamTitle() {
 	elif [ "$json" = "Too many requests, please try again later." ]; then
 		echo "Too many API requests"
 	else
-		echo "$json" | jq -r '.streamTitle'
+		echo "$json" | jq -r '.stream_title'
 	fi
 }
 
@@ -26,7 +26,7 @@ function getStreamGame() {
 	elif [ "$json" = "Too many requests, please try again later." ]; then
 		echo "Too many API requests"
 	else
-		echo "$json" | jq -r '.streamGame'
+		echo "$json" | jq -r '.stream_game'
 	fi
 }
 
