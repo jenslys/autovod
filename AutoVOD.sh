@@ -20,7 +20,14 @@ function getStreamTitle() {
 }
 
 function getStreamGame() {
-	#! Not implemented yet.
+	json=$(curl -s https://twitch-api-wrapper.vercel.app/game/$1) # https://github.com/jenslys/twitch-api-wrapper
+	if [ "$json" = "[]" ]; then
+		echo "Stream is offline"
+	elif [ "$json" = "Too many requests, please try again later." ]; then
+		echo "Too many API requests"
+	else
+		echo "$json" | jq -r '.streamGame'
+	fi
 }
 
 while true; do
@@ -34,9 +41,9 @@ while true; do
 	SPLIT_INTO_PARTS="false"                                              # If you want to split the video into parts, set this to true. (if this is enabled VIDEO_DURATION is ignored).
 	SPLIT_VIDEO_DURATION="06:00:00"                                       # Duration of each part. (XX:XX:XX)
 	API_CALLS="false"                                                     # Enable this if you want to use more stream metadata like STREAM_TITLE and STREAM_GAME. (This is a boolean value, because we dont want to make unnecessary API calls. if variables are not used)
-	if [[API_CALLS == "true"]]; then                                      #? If API_CALLS is enabled.
-		STREAM_TITLE=$(getStreamTitle "$STREAMER_NAME")                      #* Optional variable you can add to VIDEO_TITLE if you want to display the stream title.
-		STREAM_GAME=""                                                       #* Not implemented yet.
+	if [[API_CALLS == "true"]]; then                                      #
+		STREAM_TITLE=$(getStreamTitle "$STREAMER_NAME")                      #* Optional variable you can add to display the current stream title.
+		STREAM_GAME=$(getStreamGame "$STREAMER_NAME")                        #* Optioanl variable you can add to display the current stream game.
 	fi
 
 	# Splitting the stream into parts (If enabled)
