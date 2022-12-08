@@ -19,6 +19,10 @@ function getStreamTitle() {
 	fi
 }
 
+function getStreamGame() {
+	#! Not implemented yet.
+}
+
 while true; do
 	STREAMER_NAME=$TWITCH_USER                                            #! Dont change this.
 	TIME_DATE=[$(date +"%m.%d.%y")]                                       # Preview example: [08.10.21]
@@ -29,7 +33,11 @@ while true; do
 	VIDEO_PLAYLIST="$STREAMER_NAME VODs"                                  # Playlist to upload to.
 	SPLIT_INTO_PARTS="false"                                              # If you want to split the video into parts, set this to true. (if this is enabled VIDEO_DURATION is ignored).
 	SPLIT_VIDEO_DURATION="06:00:00"                                       # Duration of each part. (XX:XX:XX)
-	STREAM_TITLE=$(getStreamTitle "$STREAMER_NAME")                       #* Optional variable you can add to VIDEO_TITLE if you want to display the stream title.
+	API_CALLS="false"                                                     # Enable this if you want to use more stream metadata like STREAM_TITLE and STREAM_GAME. (This is a boolean value, because we dont want to make unnecessary API calls. if variables are not used)
+	if [[API_CALLS == "true"]]; then                                      #? If API_CALLS is enabled.
+		STREAM_TITLE=$(getStreamTitle "$STREAMER_NAME")                      #* Optional variable you can add to VIDEO_TITLE if you want to display the stream title.
+		STREAM_GAME=""                                                       #* Not implemented yet.
+	fi
 
 	# Splitting the stream into parts (If enabled)
 	if [[ "$SPLIT_INTO_PARTS" == "true" ]]; then
