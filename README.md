@@ -43,6 +43,12 @@ apt-get install python3-pip tar
 pip3 install --upgrade streamlink
 ```
 
+### JQ
+
+```bash
+apt-get install jq
+```
+
 #### YouTubeUploader
 
 ```bash
