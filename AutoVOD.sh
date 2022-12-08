@@ -7,9 +7,10 @@ echo ""
 
 # Every minute, try to download the Twitch stream, and send it to YouTube.
 # Everything through the pipe, no video file is created.
+# Src for API wrapper: # https://github.com/jenslys/twitch-api-wrapper
 
 function getStreamTitle() {
-	json=$(curl -s https://twitch-api-wrapper.vercel.app/title/$1) # https://github.com/jenslys/twitch-api-wrapper
+	json=$(curl -s https://twitch-api-wrapper.vercel.app/title/$1)
 	if [ "$json" = "[]" ]; then
 		echo "Stream is offline"
 	elif [ "$json" = "Too many requests, please try again later." ]; then
@@ -20,7 +21,7 @@ function getStreamTitle() {
 }
 
 function getStreamGame() {
-	json=$(curl -s https://twitch-api-wrapper.vercel.app/game/$1) # https://github.com/jenslys/twitch-api-wrapper
+	json=$(curl -s https://twitch-api-wrapper.vercel.app/game/$1)
 	if [ "$json" = "[]" ]; then
 		echo "Stream is offline"
 	elif [ "$json" = "Too many requests, please try again later." ]; then
