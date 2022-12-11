@@ -10,22 +10,22 @@ echo ""
 # Src for API wrapper: # https://github.com/jenslys/twitch-api-wrapper
 
 function getStreamTitle() {
-	json=$(curl -s https://twitch-api-wrapper.vercel.app/title/$1)
+	json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 https://twitch-api-wrapper.vercel.app/title/$1)
 	if [ "$json" = "[]" ]; then
 		echo "Stream is offline"
 	elif [ "$json" = "Too many requests, please try again later." ]; then
-		echo "Too many API requests"
+		echo $json
 	else
 		echo "$json" | jq -r '.stream_title'
 	fi
 }
 
 function getStreamGame() {
-	json=$(curl -s https://twitch-api-wrapper.vercel.app/game/$1)
+	json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 https://twitch-api-wrapper.vercel.app/game/$1)
 	if [ "$json" = "[]" ]; then
 		echo "Stream is offline"
 	elif [ "$json" = "Too many requests, please try again later." ]; then
-		echo "Too many API requests"
+		$json
 	else
 		echo "$json" | jq -r '.stream_game'
 	fi
