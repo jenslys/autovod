@@ -5,29 +5,33 @@ echo "Using Twitch user: $TWITCH_USER"
 echo ""
 echo ""
 
-# Every minute, try to download the Twitch stream, and send it to YouTube.
-# Everything through the pipe, no video file is created.
-# Src for API wrapper: # https://github.com/jenslys/twitch-api-wrapper
+function getStreamInfo() {
+	# This uses my own API wrapper for twitch that i have hosted. (https://github.com/jenslys/twitch-api-wrapper).
+	# i would recommend self hosting yourself with your own API credentials. but you may use the one provided below.
 
-function getStreamTitle() {
-	json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 https://twitch-api-wrapper.vercel.app/title/$1)
-	if [ "$json" = "[]" ]; then
-		echo "Stream is offline"
-	elif [ "$json" = "Too many requests, please try again later." ]; then
+	echo "Fetching stream metadata..."
+	echo ""
+
+	url="https://twitch-api-wrapper.vercel.app/info/$1"
+	json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $url)
+
+	if [ "$json" = "Too many requests, please try again later." ]; then
 		echo $json
-	else
-		echo "$json" | jq -r '.stream_title'
+		echo ""
+		return
 	fi
-}
 
-function getStreamGame() {
-	json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 https://twitch-api-wrapper.vercel.app/game/$1)
+	STREAMER_TITLE=$(echo "$json" | jq -r '.stream_title')
+	STREAMER_GAME=$(echo "$json" | jq -r '.stream_game')
+
 	if [ "$json" = "[]" ]; then
-		echo "Stream is offline"
-	elif [ "$json" = "Too many requests, please try again later." ]; then
-		$json
+		echo "Stream is offline, can't fetch metadata."
+		echo ""
 	else
-		echo "$json" | jq -r '.stream_game'
+		echo "Stream is online!"
+		echo "Current Title: $STREAMER_TITLE"
+		echo "Current Game: $STREAMER_GAME"
+		echo ""
 	fi
 }
 
@@ -39,12 +43,11 @@ while true; do
 	VIDEO_TITLE="$STREAMER_NAME - $TIME_DATE"                             # Title of the Youtube video.
 	VIDEO_DURATION="12:00:00"                                             # XX:XX:XX (YouTube has a upload limit of 12 hours per video).
 	VIDEO_PLAYLIST="$STREAMER_NAME VODs"                                  # Playlist to upload to.
-	SPLIT_INTO_PARTS="false"                                              # If you want to split the video into parts, set this to true. (if this is enabled VIDEO_DURATION is ignored).
+	SPLIT_INTO_PARTS="false"                                              #? If you want to split the video into parts, set this to true. (if this is enabled VIDEO_DURATION is ignored).
 	SPLIT_VIDEO_DURATION="06:00:00"                                       # Duration of each part. (XX:XX:XX)
-	API_CALLS="false"                                                     # Enable this if you want to use more stream metadata like STREAM_TITLE and STREAM_GAME. (This is a boolean value, because we dont want to make unnecessary API calls. if variables are not used)
-	if [[API_CALLS == "true"]]; then                                      #
-		STREAM_TITLE=$(getStreamTitle "$STREAMER_NAME")                      #* Optional variable you can add to display the current stream title.
-		STREAM_GAME=$(getStreamGame "$STREAMER_NAME")                        #* Optioanl variable you can add to display the current stream game.
+	API_CALLS="false"                                                     #? Enable if you want to fetch stream metadata like the Title or Game. You can use the folowing variables with this enabled: $STREAMER_TITLE and $STREAMER_GAME.
+	if [[API_CALLS == "true"]]; then
+		getStreamInfo $STREAMER_NAME STREAMER_TITLE STREAMER_GAME
 	fi
 
 	# Splitting the stream into parts (If enabled)
