@@ -46,7 +46,7 @@ while true; do
 	SPLIT_INTO_PARTS="false"                                              #? If you want to split the video into parts, set this to true. (if this is enabled VIDEO_DURATION is ignored).
 	SPLIT_VIDEO_DURATION="06:00:00"                                       # Duration of each part. (XX:XX:XX)
 	API_CALLS="false"                                                     #? Enable if you want to fetch stream metadata like the Title or Game. You can use the folowing variables with this enabled: $STREAMER_TITLE and $STREAMER_GAME.
-	if [[API_CALLS == "true"]]; then
+	if [[$API_CALLS == "true"]]; then
 		getStreamInfo $STREAMER_NAME STREAMER_TITLE STREAMER_GAME
 	fi
 
