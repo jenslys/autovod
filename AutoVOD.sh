@@ -61,7 +61,7 @@ while true; do
 		fi
 	fi
 
-	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
+	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-ads --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
 
 	echo "Checking twitch.tv/$STREAMER_NAME for a stream."
 
