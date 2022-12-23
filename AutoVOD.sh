@@ -11,10 +11,8 @@ function getStreamInfo() {
 
 	echo "Fetching stream metadata..."
 	echo ""
-
 	url="https://twitch-api-wrapper.vercel.app/info/$1"
 	json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $url)
-
 	if [ "$json" = "Too many requests, please try again later." ]; then
 		echo $json
 		echo ""
