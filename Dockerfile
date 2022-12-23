@@ -2,7 +2,7 @@ FROM alpine:3.14
 
 # Upgrade the system and install dependencies
 
-RUN	apk add --no-cache --upgrade python3 tar wget bash
+RUN	apk add --no-cache --upgrade python3 tar wget bash jq
 RUN	python3 -m ensurepip
 
 RUN 	pip3 install --upgrade streamlink 

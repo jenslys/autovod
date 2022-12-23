@@ -43,12 +43,18 @@ apt-get install python3-pip tar
 pip3 install --upgrade streamlink
 ```
 
+#### JQ
+
+```bash
+apt-get install jq
+```
+
 #### YouTubeUploader
 
 ```bash
 wget https://github.com/porjo/youtubeuploader/releases/download/22.03/youtubeuploader_22.03_Linux_x86_64.tar.gz
 tar -xvf youtubeuploader_22.03_Linux_x86_64.tar.gz && rm youtubeuploader_22.03_Linux_x86_64.tar.gz
-mv youtubeuploader_22.03_Linux_x86_64 /usr/local/bin/youtubeuploader
+mv youtubeuploader /usr/local/bin/youtubeuploader
 ```
 
 #### AutoVOD
@@ -86,10 +92,10 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
         youtubeuploader -filename sample.mp4
         ```
 
-    1. and then simply copy the token file along with `youtubeuploader` and `client_secrets.json` to the remote host.
+    1. and then simply copy the token file along with `youtubeuploader` and `client_secrets.json` to the remote host. Make sure these are placed inside the 'autovod' folder
 
 **Note**
-To be able to upload videos as either "Unlisted or Public", you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube for your project. Without an audit your videos will be locked as private.
+To be able to upload videos as either "Unlisted or Public" and upload multiple videos a day, you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube. Without an audit your videos will be locked as private and you are limited to how many videos you can upload before you reach a quota.
 
 ## Usage
 

@@ -8,7 +8,7 @@ printf "${g}[$now] Updating and upgrading packages...${c}\n"
 apt-get -qq update && apt-get -qq upgrade
 
 printf "${g}[$now] Installing Packages${c}\n"
-sudo apt-get install npm python3-pip tar -y
+sudo apt-get install npm python3-pip tar jq -y
 
 printf "${g}[$now] Installing PM2${c}\n"
 npm install pm2 -g && pm2 startup
