@@ -4,9 +4,10 @@
 
 ![Releases](https://img.shields.io/github/v/release/jenslys/AutoVOD.svg)
 
-This script lets you automatically record and upload broadcasts from Twitch and upload it directly to YouTube. Broadcasts are downloaded in the best quality available, no transcoding, and sent directly to YouTube, meaning no video is stored on the disk and the stream is directly sent back to YouTube.
+This script automates downloading and uploading Twitch.TV VODs to Youtube.
+Broadcasts are downloaded in realtime, the best quality available, no transcoding, and sent directly to YouTube, meaning no video is stored on the disk and the stream is directly sent back to YouTube.
 
-The script checks every minute if the selected streamer is live, if the streamer is; it starts immediately sending/uploading the stream to YouTube. After the stream is finished, the video gets processed by YouTube and made public.
+The script checks every minute if the selected streamer is live, if the streamer is; it starts immediately uploading the stream to YouTube. After the stream is finished, the video gets processed by YouTube and made public.
 
 ## Table of contents
 
@@ -86,31 +87,37 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 1. Go to the [Credentials](https://console.cloud.google.com/apis/api/youtube.googleapis.com/credentials) section, click "Create credentials" and select "OAuth client ID", select Application Type 'Web Application'. Add a 'Authorised redirect URI' of `http://localhost:8080/oauth2callback`
 1. Once created click the download (JSON) button in the list and saving it as `client_secrets.json`
 1. Getting token from YouTube:
-    1. Due to [recent changes](https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html#disallowed-oob) to the Google TOS, if you are running this utility for the first time and want to run it on a Headless server, you have to first run the tool on your local machine (Somewhere with a web browser)
+    1. Due to [recent changes](https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html#disallowed-oob) to the Google TOS, if you are running this utility for the first time and want to run it on a Headless server, you have to first run `youtubeuploader` on your local machine (Somewhere with a web browser)
 
         ```bash
         youtubeuploader -filename sample.mp4
         ```
 
-    1. and then simply copy the token file along with `youtubeuploader` and `client_secrets.json` to the remote host. Make sure these are placed inside the 'autovod' folder
+    1. and then simply copy `request.token` and `client_secrets.json` to the remote host. Make sure these are placed inside the 'autovod' folder
 
 **Note**
 To be able to upload videos as either "Unlisted or Public" and upload multiple videos a day, you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube. Without an audit your videos will be locked as private and you are limited to how many videos you can upload before you reach a quota.
 
 ## Usage
 
-### Define the Twitch Username
+### Config file
 
-This is the name of the Twitch user whose broadcast will be automatically uploaded to YouTube.
+#### Create config file
 
 ```bash
-export TWITCH_USER=username
+cp default-config.sh config.sh
+```
+
+#### Edit the config
+
+```bash
+nano config.sh
 ```
 
 ### Start AutoVOD
 
 ```bash
-pm2 start AutoVOD.sh --name $TWITCH_USER
+pm2 start AutoVOD.sh
 pm2 save
 ```
 
@@ -123,10 +130,13 @@ pm2 status
 ## Using docker
 
 This script can be used inside a docker container. To build a container, first execute all Setup-Steps, then build the image:
+
 ```bash
 docker build --build-arg TWITCH_USER=<your twitch username> -t autovod .
 ```
+
 You can now run this container
+
 ```bash
 docker run -d autovod 
 ```
