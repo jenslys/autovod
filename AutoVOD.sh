@@ -34,26 +34,25 @@ function getStreamInfo() {
 	fi
 }
 
+checkVariables() {
+	#? Checking if we need to fetch stream metadata.
+	# Checks if the variables contains the string "STREAMER_TITLE" or "STREAMER_GAME".
+	# if it does, we use the API to fetch the stream metadata.
+	# This check was added so we don't make unnenecesary API calls.
+	for var in "$@"; do
+		if [[ "$var" == *"$STREAMER_TITLE"* || "$var" == *"$STREAMER_GAME"* ]]; then
+			return 0
+		fi
+	done
+
+	return 1
+}
+
+if checkVariables "$VIDEO_TITLE" "$VIDEO_DESCRIPTION" "$VIDEO_PLAYLIST"; then
+	getStreamInfo $STREAMER_NAME STREAMER_TITLE STREAMER_GAME
+fi
+
 while true; do
-
-	checkVariables() {
-		#? Checking if we need to fetch stream metadata.
-		# Checks if the variables contains the string "STREAMER_TITLE" or "STREAMER_GAME".
-		# if it does, we use the API to fetch the stream metadata.
-		# This check was added so we don't make unnenecesary API calls.
-		for var in "$@"; do
-			if [[ "$var" == *"$STREAMER_TITLE"* || "$var" == *"$STREAMER_GAME"* ]]; then
-				return 0
-			fi
-		done
-
-		return 1
-	}
-
-	if checkVariables "$VIDEO_TITLE" "$VIDEO_DESCRIPTION" "$VIDEO_PLAYLIST"; then
-		getStreamInfo $STREAMER_NAME STREAMER_TITLE STREAMER_GAME
-	fi
-
 	#? Splitting the stream into parts
 	# Here we override the video_duratiation variable with the split_video_duration variable.
 	# We then compare the current date with the date from the last time we ran the script.
