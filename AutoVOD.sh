@@ -3,6 +3,7 @@ CURRENT_CLOCK=$(date +"%T")" |"
 echo "$CURRENT_CLOCK Starting AutoVOD..."
 echo "$CURRENT_CLOCK Loading config..."
 source config.sh #? Loads config
+echo ""
 echo "$CURRENT_CLOCK Using Twitch user: $STREAMER_NAME"
 echo ""
 
@@ -10,8 +11,7 @@ function getStreamInfo() {
 	#? Fetching stream metadata
 	# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 	# Src code for this: https://github.com/jenslys/twitch-api-wrapper
-	echo "Fetching stream metadata..."
-	echo ""
+	echo "$CURRENT_CLOCK Fetching stream metadata..."
 	json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
 	if [ "$json" = "Too many requests, please try again later." ]; then
 		echo "$CURRENT_CLOCK $json"
