@@ -42,7 +42,7 @@ while true; do
 		# if it does, we use the API to fetch the stream metadata.
 		# This check was added so we don't make unnenecesary API calls.
 		for var in "$@"; do
-			if [[ "$var" == *"STREAMER_TITLE"* || "$var" == *"STREAMER_GAME"* ]]; then
+			if [[ "$var" == *"$STREAMER_TITLE"* || "$var" == *"$STREAMER_GAME"* ]]; then
 				return 0
 			fi
 		done
