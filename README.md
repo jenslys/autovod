@@ -116,8 +116,10 @@ nano config.sh
 
 ### Start AutoVOD
 
+The ``--name`` flag is added so you can easily name the pm2 instance, you can name this whatever you want, but naming it the name as the streamer is the easiest.
+
 ```bash
-pm2 start AutoVOD.sh
+pm2 start AutoVOD.sh --name streamer_name_here
 pm2 save
 ```
 
