@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: "For feature requests."
+about: "Create a Feature request if you have a feature that might improve the application"
 title: ''
 labels: feature request
 assignees: jenslys
