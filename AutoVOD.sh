@@ -1,10 +1,9 @@
 #!/bin/bash
-
-echo "Starting AutoVOD..."
-echo "Loading config..."
+CURRENT_CLOCK=$(date +"%T")" |"
+echo "$CURRENT_CLOCK Starting AutoVOD..."
+echo "$CURRENT_CLOCK Loading config..."
 source config.sh #? Loads config
-echo "Using Twitch user: $STREAMER_NAME"
-echo ""
+echo "$CURRENT_CLOCK Using Twitch user: $STREAMER_NAME"
 echo ""
 
 function getStreamInfo() {
@@ -15,7 +14,7 @@ function getStreamInfo() {
 	echo ""
 	json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
 	if [ "$json" = "Too many requests, please try again later." ]; then
-		echo $json
+		echo "$CURRENT_CLOCK $json"
 		echo ""
 		return
 	fi
@@ -24,12 +23,12 @@ function getStreamInfo() {
 	STREAMER_GAME=$(echo "$json" | jq -r '.stream_game')
 
 	if [ "$json" = "[]" ]; then
-		echo "Stream is offline, can't fetch metadata."
+		echo "$CURRENT_CLOCK Stream is offline, can't fetch metadata."
 		echo ""
 	else
-		echo "Stream is online!"
-		echo "Current Title: $STREAMER_TITLE"
-		echo "Current Game: $STREAMER_GAME"
+		echo "$CURRENT_CLOCK Stream is online!"
+		echo "$CURRENT_CLOCK Current Title: $STREAMER_TITLE"
+		echo "$CURRENT_CLOCK Current Game: $STREAMER_GAME"
 		echo ""
 	fi
 }
@@ -70,7 +69,7 @@ while true; do
 
 	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-ads --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
 
-	echo "Checking twitch.tv/$STREAMER_NAME for a stream."
+	echo "$CURRENT_CLOCK Checking twitch.tv/$STREAMER_NAME for a stream."
 
 	# Create the input file with upload parameters
 	echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
@@ -78,6 +77,6 @@ while true; do
 	# Start StreamLink and YoutubeUploader
 	streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$TIME_DATE
 
-	echo "Trying again in 1 minute"
+	echo "$CURRENT_CLOCK Trying again in 1 minute"
 	sleep 1m
 done
