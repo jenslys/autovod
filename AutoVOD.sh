@@ -30,8 +30,8 @@ function getStreamInfo() {
 		return
 	fi
 
-	STREAMER_TITLE=$(printf "$json" | jq -r '.stream_title')
-	STREAMER_GAME=$(printf "$json" | jq -r '.stream_game')
+	STREAMER_TITLE=$(echo "$json" | jq -r '.stream_title')
+	STREAMER_GAME=$(echo "$json" | jq -r '.stream_game')
 
 	if [ "$json" = "[]" ]; then
 		printf "$CT Stream is offline, can't fetch metadata."
