@@ -14,17 +14,17 @@ echo -e "$CT Starting AutoVOD..."
 echo -e "$CT Loading config..."
 source config.cfg #? Loads config
 echo ""
-echo -e "$CT Using Twitch user: $STREAMER_NAME"
+echo -e "$CT Using Twitch user: $cyan"$STREAMER_NAME"$noColor"
 echo ""
 
 function getStreamInfo() {
 	#? Fetching stream metadata
 	# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 	# Src code for this: https://github.com/jenslys/twitch-api-wrapper
-	echo -e "$CT $purple Fetching stream metadata... $noColor"
+	echo -e "$CT $purple"Fetching stream metadata..."$noColor"
 	json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
 	if [ "$json" = "Too many requests, please try again later." ]; then
-		echo -e "$CT $red $json $noColor"
+		echo -e "$CT $red"$json"$noColor"
 		echo ""
 		return
 	fi
@@ -36,9 +36,9 @@ function getStreamInfo() {
 		echo -e "$CT Stream is offline, can't fetch metadata."
 		echo ""
 	else
-		echo -e "$CT $lime Stream is online! $noColor"
-		echo -e "$CT Current Title: $purple $STREAMER_TITLE $noColor"
-		echo -e "$CT Current Game: $purple $STREAMER_GAME $noColor"
+		echo -e "$CT $lime"Stream is online!"$noColor"
+		echo -e "$CT Current Title: $purple"$STREAMER_TITLE"$noColor"
+		echo -e "$CT Current Game: $purple"$STREAMER_GAME"$noColor"
 		echo ""
 	fi
 }
@@ -79,7 +79,7 @@ while true; do
 
 	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-ads --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
 
-	echo -e "$CT Checking twitch.tv/$STREAMER_NAME for a stream."
+	echo -e "$CT Checking twitch.tv/$cyan"$STREAMER_NAME" for a stream.$noColor"
 
 	# Create the input file with upload parameters
 	echo -e '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
