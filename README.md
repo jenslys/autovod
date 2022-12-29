@@ -105,7 +105,7 @@ To be able to upload videos as either "Unlisted or Public" and upload multiple v
 #### Create config file
 
 ```bash
-cp default-config.sh config.sh
+cp default-config.cfg config.cfg
 ```
 
 #### Edit the config
