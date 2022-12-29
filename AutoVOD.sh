@@ -1,8 +1,12 @@
 #!/bin/bash
 
+#? Colors
 noColor="\033[0m"
 yellow="\033[0;33m"
 purple="\033[0;35m"
+green="\033[0;32m"
+cyan="\033[0;36m"
+red="\033[0;31m"
 
 CT=$yellow$(date +"%T")" |"$noColor #? Current time + Formatting
 
@@ -17,10 +21,10 @@ function getStreamInfo() {
 	#? Fetching stream metadata
 	# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 	# Src code for this: https://github.com/jenslys/twitch-api-wrapper
-	echo -e "$CT Fetching stream metadata..."
+	echo -e "$CT $purple Fetching stream metadata... $noColor"
 	json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
 	if [ "$json" = "Too many requests, please try again later." ]; then
-		echo -e "$CT $json"
+		echo -e "$CT $red $json $noColor"
 		echo ""
 		return
 	fi
@@ -32,9 +36,9 @@ function getStreamInfo() {
 		echo -e "$CT Stream is offline, can't fetch metadata."
 		echo ""
 	else
-		echo -e "$CT Stream is online!"
-		echo -e "$CT Current Title: $STREAMER_TITLE"
-		echo -e "$CT Current Game: $STREAMER_GAME"
+		echo -e "$CT $lime Stream is online! $noColor"
+		echo -e "$CT Current Title: $purple $STREAMER_TITLE $noColor"
+		echo -e "$CT Current Game: $purple $STREAMER_GAME $noColor"
 		echo ""
 	fi
 }
