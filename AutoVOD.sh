@@ -7,39 +7,40 @@ purple="\033[0;35m"
 green="\033[0;32m"
 cyan="\033[0;36m"
 red="\033[0;31m"
+newline="\n%s\n"
 
 CT=$yellow$(date +"%T")" |"$noColor #? Current time + Formatting
 
-echo -e "$CT Starting AutoVOD..."
-echo -e "$CT Loading config..."
+printf "$CT Starting AutoVOD..."
+printf "$CT Loading config..."
 source config.cfg #? Loads config
-echo ""
-echo -e "$CT Using Twitch user: $STREAMER_NAME"
-echo ""
+printf "$newline"
+printf "$CT Using Twitch user: $STREAMER_NAME"
+printf "$newline"
 
 function getStreamInfo() {
 	#? Fetching stream metadata
 	# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 	# Src code for this: https://github.com/jenslys/twitch-api-wrapper
-	echo -e "$CT $purple Fetching stream metadata... $noColor"
+	printf "$CT $purple Fetching stream metadata... $noColor"
 	json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
 	if [ "$json" = "Too many requests, please try again later." ]; then
-		echo -e "$CT $red $json $noColor"
-		echo ""
+		printf "$CT $red $json $noColor"
+		printf "$newline"
 		return
 	fi
 
-	STREAMER_TITLE=$(echo "$json" | jq -r '.stream_title')
-	STREAMER_GAME=$(echo "$json" | jq -r '.stream_game')
+	STREAMER_TITLE=$(printf "$json" | jq -r '.stream_title')
+	STREAMER_GAME=$(printf "$json" | jq -r '.stream_game')
 
 	if [ "$json" = "[]" ]; then
-		echo -e "$CT Stream is offline, can't fetch metadata."
-		echo ""
+		printf "$CT Stream is offline, can't fetch metadata."
+		printf "$newline"
 	else
-		echo -e "$CT $lime Stream is online! $noColor"
-		echo -e "$CT Current Title: $purple $STREAMER_TITLE $noColor"
-		echo -e "$CT Current Game: $purple $STREAMER_GAME $noColor"
-		echo ""
+		printf "$CT $lime Stream is online! $noColor"
+		printf "$CT Current Title: $purple $STREAMER_TITLE $noColor"
+		printf "$CT Current Game: $purple $STREAMER_GAME $noColor"
+		printf "$newline"
 	fi
 }
 
@@ -79,14 +80,14 @@ while true; do
 
 	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-ads --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
 
-	echo -e "$CT Checking twitch.tv/$STREAMER_NAME for a stream."
+	printf "$CT Checking twitch.tv/$STREAMER_NAME for a stream."
 
 	# Create the input file with upload parameters
-	echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
+	printf '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
 
 	# Start StreamLink and YoutubeUploader
 	streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$TIME_DATE
 
-	echo -e "$CT Trying again in 1 minute"
+	printf "$CT Trying again in 1 minute"
 	sleep 1m
 done
