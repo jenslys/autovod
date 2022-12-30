@@ -12,8 +12,11 @@ CT=$yellow$(date +"%T")" |"$noColor #? Current time + Formatting
 
 echo -e "$CT Starting AutoVOD..."
 echo -e "$CT Loading config..."
-source config.cfg #? Loads config
-echo ""
+if [[ -f config.cfg ]]; then
+	source config.cfg #? Loads config
+else
+	echo $red"Config.cfg does not exist, please create one."$noColor
+fi
 echo -e "$CT Using Twitch user: $cyan"$STREAMER_NAME"$noColor"
 echo ""
 
@@ -21,7 +24,7 @@ function getStreamInfo() {
 	#? Fetching stream metadata
 	# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 	# Src code for this: https://github.com/jenslys/twitch-api-wrapper
-	echo -e "$CT $purple"Fetching stream metadata..."$noColor"
+	echo -e "$CT Trying to fetching stream metadata..."
 	json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
 	if [ "$json" = "Too many requests, please try again later." ]; then
 		echo -e "$CT $red"$json"$noColor"
@@ -32,7 +35,7 @@ function getStreamInfo() {
 	STREAMER_GAME=$(echo "$json" | jq -r '.stream_game')
 
 	if [ "$STREAMER_TITLE" = null ]; then
-		echo -e "$CT Stream is offline, can't fetch metadata."
+		echo -e "$CT Stream seems offline, can't fetch metadata."
 		echo ""
 	else
 		echo -e "$CT $green"Stream is online!"$noColor"
@@ -78,7 +81,7 @@ while true; do
 
 	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-ads --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
 
-	echo -e "$CT Checking twitch.tv/$cyan"$STREAMER_NAME"$noColor"for a stream.""
+	echo -e "$CT Checking twitch.tv/$cyan"$STREAMER_NAME"$noColor" for a stream...""
 
 	# Create the input file with upload parameters
 	echo -e '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
