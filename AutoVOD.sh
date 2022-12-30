@@ -32,8 +32,8 @@ config_file="$STREAMER_NAME.config"
 files=("request.token" "client_secrets.json" "$config_file")
 for file in "${files[@]}"; do
 	if [[ ! -f "$file" ]]; then
-		echo -e "$file is missing"
-		echo -e "Add/Create $file then run "pm2 restart procces_id_here" to restart the script."
+		echo "$file is missing"
+		echo "Add/Create $file then run "pm2 restart procces_id_here" to restart the script."
 		exit 1
 	fi
 done
@@ -49,7 +49,7 @@ while true; do
 		#? Fetching stream metadata
 		# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 		# Src code for this: https://github.com/jenslys/twitch-api-wrapper
-		echo -e "$CT Trying to fetching stream metadata"
+		echo "Trying to fetching stream metadata"
 		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
 		if [ "$json" = "Too many requests, please try again later." ]; then
 			echo $json
