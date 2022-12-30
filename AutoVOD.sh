@@ -22,9 +22,9 @@ fetch_args() {
 
 # Call the function to get the value of the --name option
 fetch_args "$@"
-TWITCH_USERNAME=$name
-echo "Selected streamer: $TWITCH_USERNAME"
-config_file="$TWITCH_USERNAME.config"
+STREAMER_NAME=$name
+echo "Selected streamer: $STREAMER_NAME"
+config_file="$STREAMER_NAME.config"
 
 #? Check if requrired files exists
 # The script wont work if these files are missing.
