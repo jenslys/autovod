@@ -10,18 +10,29 @@ red="\033[0;31m"
 
 CT=$yellow$(date +"%T")" |"$noColor #? Current time + Formatting
 
-echo -e "$CT Starting AutoVOD..."
-echo -e "$CT Loading config..."
-if [[ -f config.cfg ]]; then
-	source config.cfg #? Loads config
-else
-	echo -e "$red"Config.cfg does not exist, please create one."$noColor"
+#? Check if requrired files exists in the same directory as the script
+if [[ ! -f request.token ]]; then
+	echo -e "$red""request.token is missing"$noColor
 	exit 1
 fi
+if [[ ! -f client_secrets.json ]]; then
+	echo -e "$red""client_secrets.json is missing"$noColor
+	exit 1
+fi
+if [[ ! -f config.cfg ]]; then
+	echo -e "$red""Config.cfg does not exist, please create one."$noColor
+	exit 1
+else
+	echo -e "$CT Loading config..."
+	source config.cfg #? Loads config
+fi
+
+echo -e "$CT Starting AutoVOD..."
+echo -e "$CT Loading config..."
 echo -e "$CT Using Twitch user: $cyan"$STREAMER_NAME"$noColor"
 echo ""
 
-function getStreamInfo() {
+getStreamInfo() {
 	#? Fetching stream metadata
 	# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 	# Src code for this: https://github.com/jenslys/twitch-api-wrapper
