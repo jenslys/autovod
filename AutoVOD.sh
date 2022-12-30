@@ -26,17 +26,16 @@ function getStreamInfo() {
 	if [ "$json" = "Too many requests, please try again later." ]; then
 		echo -e "$CT $red"$json"$noColor"
 		echo ""
-		return
 	fi
 
 	STREAMER_TITLE=$(echo "$json" | jq -r '.stream_title')
 	STREAMER_GAME=$(echo "$json" | jq -r '.stream_game')
 
-	if [ "$json" = "[]" ]; then
+	if [ "$STREAMER_TITLE" = null ]; then
 		echo -e "$CT Stream is offline, can't fetch metadata."
 		echo ""
 	else
-		echo -e "$CT $lime"Stream is online!"$noColor"
+		echo -e "$CT $green"Stream is online!"$noColor"
 		echo -e "$CT Current Title: $purple"$STREAMER_TITLE"$noColor"
 		echo -e "$CT Current Game: $purple"$STREAMER_GAME"$noColor"
 		echo ""
@@ -79,7 +78,7 @@ while true; do
 
 	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-ads --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
 
-	echo -e "$CT Checking twitch.tv/$cyan"$STREAMER_NAME" for a stream.$noColor"
+	echo -e "$CT Checking twitch.tv/$cyan"$STREAMER_NAME"$noColor"for a stream.""
 
 	# Create the input file with upload parameters
 	echo -e '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
