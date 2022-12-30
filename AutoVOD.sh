@@ -6,7 +6,7 @@ fetch_args() {
 	while getopts ":n:" opt; do
 		case $opt in
 		n)
-			TWITCH_USERNAME=$OPTARG
+			name=$OPTARG
 			;;
 		\?)
 			echo "Invalid option: -$OPTARG" >&2
@@ -22,8 +22,8 @@ fetch_args() {
 
 # Call the function to get the value of the --name option
 fetch_args "$@"
+TWITCH_USERNAME=$name
 echo "Selected streamer: $TWITCH_USERNAME"
-
 config_file="$TWITCH_USERNAME.config"
 
 #? Check if requrired files exists
