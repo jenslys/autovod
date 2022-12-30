@@ -11,21 +11,15 @@ red="\033[0;31m"
 CT=$yellow$(date +"%T")" |"$noColor #? Current time + Formatting
 
 #? Check if requrired files exists in the same directory as the script
-if [[ ! -f request.token ]]; then
-	echo -e "$red""request.token is missing"$noColor
-	exit 1
-fi
-if [[ ! -f client_secrets.json ]]; then
-	echo -e "$red""client_secrets.json is missing"$noColor
-	exit 1
-fi
-if [[ ! -f config.cfg ]]; then
-	echo -e "$red""Config.cfg does not exist, please create one."$noColor
-	exit 1
-else
-	echo -e "$CT Loading config..."
-	source config.cfg #? Loads config
-fi
+files=("request.token" "client_secrets.json" "config.cfg")
+for file in "${files[@]}"; do
+	if [[ ! -f "$file" ]]; then
+		echo $red"$file is missing"$noColor
+		exit 1
+	fi
+done
+echo -e "$CT Loading config..."
+source config.cfg #? Loads config
 
 echo -e "$CT Starting AutoVOD..."
 echo -e "$CT Loading config..."
