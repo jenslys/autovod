@@ -14,8 +14,8 @@ CT=$yellow$(date +"%T")" |"$noColor #? Current time + Formatting
 files=("request.token" "client_secrets.json" "config.cfg")
 for file in "${files[@]}"; do
 	if [[ ! -f "$file" ]]; then
-		echo $red"$file is missing"$noColor
-		echo $red"Add/Create $file then run $yellow"pm2 restart procces_id_here"$red to restart the script."$noColor
+		echo -e $red"$file is missing"$noColor
+		echo -e $red"Add/Create $file then run $yellow"pm2 restart procces_id_here"$red to restart the script."$noColor
 		exit 1
 	fi
 done
