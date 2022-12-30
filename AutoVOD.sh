@@ -1,6 +1,5 @@
 #!/bin/bash
 CT=date +"%T"
-TIME_DATE=date +"%m.%d.%y"
 
 # Function to get the value of the --name option
 fetch_args() {
@@ -45,6 +44,7 @@ while true; do
 	echo -e $($CT) "|" "Loading $config_file"
 	source $config_file
 	echo ""
+	TIME_DATE=[$(date +"%m.%d.%y")]
 
 	getStreamInfo() {
 		#? Fetching stream metadata
