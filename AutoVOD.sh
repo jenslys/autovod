@@ -15,7 +15,7 @@ files=("request.token" "client_secrets.json" "config.cfg")
 for file in "${files[@]}"; do
 	if [[ ! -f "$file" ]]; then
 		echo -e $red"$file is missing"$noColor
-		echo -e $red"Add/Create $file then run $yellow"pm2 restart procces_id_here"$red to restart the script."$noColor
+		echo -e "Add/Create $file then run $yellow"pm2 restart procces_id_here"$noColor to restart the script."
 		exit 1
 	fi
 done
