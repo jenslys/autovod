@@ -111,7 +111,7 @@ cp default-config.cfg config.cfg
 #### Edit the config
 
 ```bash
-nano config.sh
+nano config.cfg
 ```
 
 ### Start AutoVOD
