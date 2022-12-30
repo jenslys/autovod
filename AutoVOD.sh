@@ -8,9 +8,11 @@ green="\033[0;32m"
 cyan="\033[0;36m"
 red="\033[0;31m"
 
-CT=$yellow$(date +"%T")" |"$noColor #? Current time + Formatting
+CT=$yellow$(date +"%T")" |"$noColor # Current time + Formatting
 
-#? Check if requrired files exists in the same directory as the script
+#? Check if requrired files exists
+# The script wont work if these files are missing.
+# So we check if they exists, if not we exit the script.
 files=("request.token" "client_secrets.json" "config.cfg")
 for file in "${files[@]}"; do
 	if [[ ! -f "$file" ]]; then
@@ -21,7 +23,7 @@ for file in "${files[@]}"; do
 done
 
 echo -e "$CT Loading config"
-source config.cfg #? Loads config
+source config.cfg # Load config
 echo -e "$CT Starting AutoVOD"
 echo -e "$CT Loading config"
 echo -e "$CT Using Twitch user: $cyan"$STREAMER_NAME"$noColor"
@@ -91,9 +93,9 @@ while true; do
 	echo -e "$CT Checking twitch.tv/$cyan"$STREAMER_NAME"$noColor" for a stream""
 
 	# Create the input file with upload parameters
-	echo -e '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
+	echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
 
-	# Start StreamLink and YoutubeUploader
+	# Pass the stream from streamlink to youtubeuploader and then send the file to the void (dev/null)
 	streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$TIME_DATE
 
 	echo -e "$CT No stream found, Trying again in 1 minute"
