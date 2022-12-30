@@ -15,8 +15,8 @@ echo -e "$CT Loading config..."
 if [[ -f config.cfg ]]; then
 	source config.cfg #? Loads config
 else
-	echo $red"Config.cfg does not exist, please create one."$noColor
-	exit
+	echo -e "$red"Config.cfg does not exist, please create one."$noColor"
+	exit 1
 fi
 echo -e "$CT Using Twitch user: $cyan"$STREAMER_NAME"$noColor"
 echo ""
