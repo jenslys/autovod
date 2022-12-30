@@ -15,12 +15,13 @@ files=("request.token" "client_secrets.json" "config.cfg")
 for file in "${files[@]}"; do
 	if [[ ! -f "$file" ]]; then
 		echo $red"$file is missing"$noColor
+		echo $red"Add/Create $file then run $yellow"pm2 restart procces_id_here"$red to restart the script."$noColor
 		exit 1
 	fi
 done
+
 echo -e "$CT Loading config..."
 source config.cfg #? Loads config
-
 echo -e "$CT Starting AutoVOD..."
 echo -e "$CT Loading config..."
 echo -e "$CT Using Twitch user: $cyan"$STREAMER_NAME"$noColor"
