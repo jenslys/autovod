@@ -1,78 +1,94 @@
 #!/bin/bash
+CT=date +"%T"
+TIME_DATE=date +"%m.%d.%y"
 
-#? Colors
-noColor="\033[0m"
-yellow="\033[0;33m"
-purple="\033[0;35m"
-green="\033[0;32m"
-cyan="\033[0;36m"
-red="\033[0;31m"
+# Function to get the value of the --name option
+fetch_args() {
+	# Parse command-line options
+	while getopts ":n:" opt; do
+		case $opt in
+		n)
+			TWITCH_USERNAME=$OPTARG
+			;;
+		\?)
+			echo "Invalid option: -$OPTARG" >&2
+			exit 1
+			;;
+		:)
+			echo "Option -$OPTARG requires an argument." >&2
+			exit 1
+			;;
+		esac
+	done
+}
 
-CT=$yellow$(date +"%T")" |"$noColor # Current time + Formatting
+# Call the function to get the value of the --name option
+fetch_args "$@"
+echo -e $($CT) "|" "Selected streamer: $TWITCH_USERNAME"
+
+config_file="$TWITCH_USERNAME.config"
 
 #? Check if requrired files exists
 # The script wont work if these files are missing.
 # So we check if they exists, if not we exit the script.
-files=("request.token" "client_secrets.json" "config.cfg")
+files=("request.token" "client_secrets.json" "$config_file")
 for file in "${files[@]}"; do
 	if [[ ! -f "$file" ]]; then
-		echo -e $red"$file is missing"$noColor
-		echo -e "Add/Create $file then run $yellow"pm2 restart procces_id_here"$noColor to restart the script."
+		echo -e "$file is missing"
+		echo -e "Add/Create $file then run "pm2 restart procces_id_here" to restart the script."
 		exit 1
 	fi
 done
 
-echo -e "$CT Loading config"
-source config.cfg # Load config
-echo -e "$CT Starting AutoVOD"
-echo -e "$CT Loading config"
-echo -e "$CT Using Twitch user: $cyan"$STREAMER_NAME"$noColor"
-echo ""
-
-getStreamInfo() {
-	#? Fetching stream metadata
-	# Using my own API to wrap around twitch's API to fetch additional stream metadata.
-	# Src code for this: https://github.com/jenslys/twitch-api-wrapper
-	echo -e "$CT Trying to fetching stream metadata"
-	json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
-	if [ "$json" = "Too many requests, please try again later." ]; then
-		echo -e "$CT $red"$json"$noColor"
-		echo ""
-	fi
-
-	STREAMER_TITLE=$(echo "$json" | jq -r '.stream_title')
-	STREAMER_GAME=$(echo "$json" | jq -r '.stream_game')
-
-	if [ "$STREAMER_TITLE" = null ]; then
-		echo -e "$CT Stream seems offline, can't fetch metadata."
-		echo ""
-	else
-		echo -e "$CT $green"Stream is online!"$noColor"
-		echo -e "$CT Current Title: $purple"$STREAMER_TITLE"$noColor"
-		echo -e "$CT Current Game: $purple"$STREAMER_GAME"$noColor"
-		echo ""
-	fi
-}
-
-checkVariables() {
-	#? Checking if we need to fetch stream metadata.
-	# Checks if the variables contains the string "STREAMER_TITLE" or "STREAMER_GAME".
-	# if it does, we use the API to fetch the stream metadata.
-	# This check was added so we don't make unnenecesary API calls.
-	for var in "$@"; do
-		if [[ "$var" == *"$STREAMER_TITLE"* || "$var" == *"$STREAMER_GAME"* ]]; then
-			return 0
-		fi
-	done
-
-	return 1
-}
-
-if checkVariables "$VIDEO_TITLE" "$VIDEO_DESCRIPTION" "$VIDEO_PLAYLIST"; then
-	getStreamInfo $STREAMER_NAME STREAMER_TITLE STREAMER_GAME
-fi
-
+echo -e $($CT) "|" "Starting AutoVOD"
 while true; do
+	echo -e $($CT) "|" "Loading $config_file"
+	source $config_file
+	echo ""
+
+	getStreamInfo() {
+		#? Fetching stream metadata
+		# Using my own API to wrap around twitch's API to fetch additional stream metadata.
+		# Src code for this: https://github.com/jenslys/twitch-api-wrapper
+		echo -e "$CT Trying to fetching stream metadata"
+		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
+		if [ "$json" = "Too many requests, please try again later." ]; then
+			echo -e $($CT) "|" $json
+			echo ""
+		fi
+
+		STREAMER_TITLE=$(echo "$json" | jq -r '.stream_title')
+		STREAMER_GAME=$(echo "$json" | jq -r '.stream_game')
+
+		if [ "$STREAMER_TITLE" = null ]; then
+			echo -e $($CT) "|""Stream seems offline, can't fetch metadata."
+			echo ""
+		else
+			echo -e $($CT) "|" "Stream is online!"
+			echo -e $($CT) "|" "Current Title:"$STREAMER_TITLE
+			echo -e $($CT) "|" "Current Game:" $STREAMER_GAME
+			echo ""
+		fi
+	}
+
+	checkVariables() {
+		#? Checking if we need to fetch stream metadata.
+		# Checks if the variables contains the string "STREAMER_TITLE" or "STREAMER_GAME".
+		# if it does, we use the API to fetch the stream metadata.
+		# This check was added so we don't make unnenecesary API calls.
+		for var in "$@"; do
+			if [[ "$var" == *"$STREAMER_TITLE"* || "$var" == *"$STREAMER_GAME"* ]]; then
+				return 0
+			fi
+		done
+
+		return 1
+	}
+
+	if checkVariables "$VIDEO_TITLE" "$VIDEO_DESCRIPTION" "$VIDEO_PLAYLIST"; then
+		getStreamInfo $STREAMER_NAME STREAMER_TITLE STREAMER_GAME
+	fi
+
 	#? Splitting the stream into parts
 	# Here we override the video_duratiation variable with the split_video_duration variable.
 	# We then compare the current date with the date from the last time we ran the script.
@@ -90,14 +106,18 @@ while true; do
 
 	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-ads --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
 
-	echo -e "$CT Checking twitch.tv/$cyan"$STREAMER_NAME"$noColor" for a stream""
+	echo -e $($CT) "|" "Checking twitch.tv/"$STREAMER_NAME "for a stream"
 
 	# Create the input file with upload parameters
 	echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
+	echo "Youtube meta:" #! Delete this
+	echo "Title: $VIDEO_TITLE"
+	echo "Description: $VIDEO_DESCRIPTION"
+	echo "Playlist: $VIDEO_PLAYLIST"
 
 	# Pass the stream from streamlink to youtubeuploader and then send the file to the void (dev/null)
 	streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$TIME_DATE
 
-	echo -e "$CT No stream found, Trying again in 1 minute"
+	echo -e $($CT) "|" "No stream found, Trying again in 1 minute"
 	sleep 1m
 done

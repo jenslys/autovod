@@ -102,24 +102,26 @@ To be able to upload videos as either "Unlisted or Public" and upload multiple v
 
 ### Config file
 
+We will create a dedicated config file for the steamer, in case are monitoring multiple streamers with different settings.
+
 #### Create config file
 
 ```bash
-cp default-config.cfg config.cfg
+cp default.config StreamerNameHere.config
 ```
 
 #### Edit the config
 
+Edit your newly created config with either `nano` or `vim`
+
 ```bash
-nano config.cfg
+nano StreamerNameHere.config
 ```
 
 ### Start AutoVOD
 
-The ``--name`` flag is added so you can easily name the pm2 instance, you can name this whatever you want, but naming it the name as the streamer is the easiest.
-
 ```bash
-pm2 start AutoVOD.sh --name streamer_name_here
+pm2 start AutoVOD.sh --name StreamerNameHere
 pm2 save
 ```
 

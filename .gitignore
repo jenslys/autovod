@@ -3,4 +3,5 @@ request.token
 .DS_Store
 /tests/
 sample.mp4
-config.cfg
+*.config
+!default.config
