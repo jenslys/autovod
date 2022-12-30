@@ -1,5 +1,4 @@
 #!/bin/bash
-CT=date +"%T"
 
 # Function to get the value of the --name option
 fetch_args() {
@@ -23,7 +22,7 @@ fetch_args() {
 
 # Call the function to get the value of the --name option
 fetch_args "$@"
-echo -e $($CT) "|" "Selected streamer: $TWITCH_USERNAME"
+echo "Selected streamer: $TWITCH_USERNAME"
 
 config_file="$TWITCH_USERNAME.config"
 
@@ -39,9 +38,9 @@ for file in "${files[@]}"; do
 	fi
 done
 
-echo -e $($CT) "|" "Starting AutoVOD"
+echo "Starting AutoVOD"
 while true; do
-	echo -e $($CT) "|" "Loading $config_file"
+	echo "Loading $config_file"
 	source $config_file
 	echo ""
 	TIME_DATE=[$(date +"%m.%d.%y")]
@@ -53,7 +52,7 @@ while true; do
 		echo -e "$CT Trying to fetching stream metadata"
 		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
 		if [ "$json" = "Too many requests, please try again later." ]; then
-			echo -e $($CT) "|" $json
+			echo $json
 			echo ""
 		fi
 
@@ -61,12 +60,12 @@ while true; do
 		STREAMER_GAME=$(echo "$json" | jq -r '.stream_game')
 
 		if [ "$STREAMER_TITLE" = null ]; then
-			echo -e $($CT) "|""Stream seems offline, can't fetch metadata."
+			echo "Stream seems offline, can't fetch metadata."
 			echo ""
 		else
-			echo -e $($CT) "|" "Stream is online!"
-			echo -e $($CT) "|" "Current Title:"$STREAMER_TITLE
-			echo -e $($CT) "|" "Current Game:" $STREAMER_GAME
+			echo "Stream is online!"
+			echo "Current Title:"$STREAMER_TITLE
+			echo "Current Game:" $STREAMER_GAME
 			echo ""
 		fi
 	}
@@ -106,7 +105,7 @@ while true; do
 
 	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-ads --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
 
-	echo -e $($CT) "|" "Checking twitch.tv/"$STREAMER_NAME "for a stream"
+	echo "Checking twitch.tv/"$STREAMER_NAME "for a stream"
 
 	# Create the input file with upload parameters
 	echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
@@ -118,6 +117,6 @@ while true; do
 	# Pass the stream from streamlink to youtubeuploader and then send the file to the void (dev/null)
 	streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$TIME_DATE
 
-	echo -e $($CT) "|" "No stream found, Trying again in 1 minute"
+	echo "No stream found, Trying again in 1 minute"
 	sleep 1m
 done
