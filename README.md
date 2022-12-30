@@ -123,10 +123,16 @@ pm2 start AutoVOD.sh --name streamer_name_here
 pm2 save
 ```
 
-### Check status
+#### Check status
 
 ```bash
 pm2 status
+```
+
+#### Check logs
+
+```bash
+pm2 logs
 ```
 
 ## Using docker
