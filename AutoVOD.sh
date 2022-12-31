@@ -113,6 +113,6 @@ while true; do
 	# Pass the stream from streamlink to youtubeuploader and then send the file to the void (dev/null)
 	streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$TIME_DATE
 
-	echo "No stream found, Trying again in 1 minute"
+	echo "Trying again in 1 minute"
 	sleep 1m
 done
