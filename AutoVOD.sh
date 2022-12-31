@@ -50,9 +50,9 @@ while true; do
 		# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 		# Src code for this: https://github.com/jenslys/twitch-api-wrapper
 		echo "Trying to fetching stream metadata"
-		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
+		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 "$API_URL")
 		if [ "$json" = "Too many requests, please try again later." ]; then
-			echo $json
+			echo "$json"
 			echo ""
 		fi
 
@@ -64,8 +64,8 @@ while true; do
 			echo ""
 		else
 			echo "Stream is online!"
-			echo "Current Title:"$STREAMER_TITLE
-			echo "Current Game:" $STREAMER_GAME
+			echo "Current Title:" "$STREAMER_TITLE"
+			echo "Current Game:" "$STREAMER_GAME"
 			echo ""
 		fi
 	}
@@ -85,7 +85,7 @@ while true; do
 	}
 
 	if checkVariables "$VIDEO_TITLE" "$VIDEO_DESCRIPTION" "$VIDEO_PLAYLIST"; then
-		getStreamInfo $STREAMER_NAME STREAMER_TITLE STREAMER_GAME
+		getStreamInfo "$STREAMER_NAME" STREAMER_TITLE STREAMER_GAME
 	fi
 
 	#? Splitting the stream into parts
@@ -96,7 +96,7 @@ while true; do
 	if [[ "$SPLIT_INTO_PARTS" == "true" ]]; then
 		VIDEO_DURATION=$SPLIT_VIDEO_DURATION
 		if [[ "$TIME_DATE" == "$TIME_DATE_CHECK" ]]; then
-			CURRENT_PART=$(($CURRENT_PART + 1))
+			CURRENT_PART=$((CURRENT_PART + 1))
 			VIDEO_TITLE="$VIDEO_TITLE - Part $CURRENT_PART"
 		else
 			CURRENT_PART=1
@@ -105,13 +105,13 @@ while true; do
 
 	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-ads --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
 
-	echo "Checking twitch.tv/"$STREAMER_NAME "for a stream"
+	echo "Checking twitch.tv/""$STREAMER_NAME" "for a stream"
 
 	# Create the input file with upload parameters
-	echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
+	echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input."$STREAMER_NAME"
 
 	# Pass the stream from streamlink to youtubeuploader and then send the file to the void (dev/null)
-	streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$TIME_DATE
+	streamlink twitch.tv/"$STREAMER_NAME" "$STREAMLINK_OPTIONS" | youtubeuploader -metaJSON /tmp/input."$STREAMER_NAME" -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$TIME_DATE
 
 	echo "No stream found, Trying again in 1 minute"
 	sleep 1m
