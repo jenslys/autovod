@@ -111,12 +111,6 @@ while true; do
 
 	echo "Checking twitch.tv/"$STREAMER_NAME "for a stream"
 
-	echo "STREAMER_NAME: $STREAMER_NAME"
-	echo "VIDEO_TITLE: $VIDEO_TITLE"
-	echo "VIDEO_DESCRIPTION: $VIDEO_DESCRIPTION"
-	echo "VIDEO_PLAYLIST: $VIDEO_PLAYLIST"
-	echo "API_URL: $API_URL"
-
 	# Create the input file with upload parameters
 	echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
 
