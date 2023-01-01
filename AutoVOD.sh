@@ -114,5 +114,5 @@ while true; do
 	streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$TIME_DATE
 
 	echo "Trying again in 1 minute"
-	sleep 1m
+	sleep 60
 done
