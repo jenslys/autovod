@@ -39,10 +39,10 @@ for file in "${files[@]}"; do
 done
 
 echo "Starting AutoVOD"
+echo "Loading $config_file"
+source $config_file
+echo ""
 while true; do
-	echo "Loading $config_file"
-	source $config_file
-	echo ""
 	TIME_DATE=[$(date +"%m.%d.%y")]
 
 	getStreamInfo() {
