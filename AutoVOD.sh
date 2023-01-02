@@ -62,7 +62,6 @@ while true; do
 		if [ "$STREAMER_TITLE" = null ]; then
 			echo "Stream seems offline, can't fetch metadata."
 			echo ""
-			return 1
 		else
 			echo "Stream is online!"
 			echo "Current Title: "$STREAMER_TITLE
@@ -70,7 +69,6 @@ while true; do
 			# Reloading the config file to get the new variables
 			source $config_file
 			echo ""
-			return 0
 		fi
 	fi
 
