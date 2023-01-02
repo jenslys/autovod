@@ -100,11 +100,14 @@ while true; do
 	if [[ "$SPLIT_INTO_PARTS" == "true" ]]; then
 		VIDEO_DURATION=$SPLIT_VIDEO_DURATION
 		if [[ "$($TIME_DATE)" == "$TIME_DATE_CHECK" ]]; then
+			# Increment the CURRENT_PART variable
 			CURRENT_PART=$(($CURRENT_PART + 1))
-			VIDEO_TITLE="$VIDEO_TITLE - Part $CURRENT_PART"
 		else
+			# Reset CURRENT_PART to 1 if the current date is not equal to TIME_DATE_CHECK
 			CURRENT_PART=1
 		fi
+		# Add " - Part $CURRENT_PART" to the end of the VIDEO_TITLE variable
+		VIDEO_TITLE="$VIDEO_TITLE - Part $CURRENT_PART"
 	fi
 
 	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-ads --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
