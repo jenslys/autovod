@@ -23,20 +23,29 @@ fetch_args() {
 	done
 }
 
-getStreamInfo() {
-	#? Checking if we need to fetch stream metadata.
-	# Checks if the variables contain the string "STREAMER_TITLE" or "STREAMER_GAME".
-	# If it does, we use the API to fetch the stream metadata.
-	# These check were added so we don't make unnecessary calls to my API.
-	fetch_metadata=false
-	for var in "$@"; do
-		if [[ "$var" == *"$STREAMER_TITLE"* || "$var" == *"$STREAMER_GAME"* ]]; then
-			fetch_metadata=true
-			break
-		fi
-	done
+# Call the function to get the value of the --name option
+fetch_args "$@"
+STREAMER_NAME=$name
+echo "Selected streamer: $STREAMER_NAME"
+config_file="$STREAMER_NAME.config"
 
-	if $fetch_metadata; then
+#? Check if requrired files exists
+# The script wont work if these files are missing.
+# So we check if they exists, if not we exit the script.
+if test -f request.token -a -f client_secrets.json -a -f "$config_file"; then
+	echo "All required files exist"
+else
+	echo "One or more required files are missing"
+	exit 1
+fi
+
+echo "Starting AutoVOD"
+echo "Loading $config_file"
+source $config_file
+echo ""
+
+while true; do
+	if [[ "$API_CALLS" == "true" ]]; then
 		#? Fetching stream metadata
 		# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 		# Src code for this: https://github.com/jenslys/twitch-api-wrapper
@@ -64,33 +73,6 @@ getStreamInfo() {
 			return 0
 		fi
 	fi
-}
-
-# Call the function to get the value of the --name option
-fetch_args "$@"
-STREAMER_NAME=$name
-echo "Selected streamer: $STREAMER_NAME"
-config_file="$STREAMER_NAME.config"
-
-#? Check if requrired files exists
-# The script wont work if these files are missing.
-# So we check if they exists, if not we exit the script.
-if test -f request.token -a -f client_secrets.json -a -f "$config_file"; then
-	echo "All required files exist"
-else
-	echo "One or more required files are missing"
-	exit 1
-fi
-
-echo "Starting AutoVOD"
-echo "Loading $config_file"
-source $config_file
-echo ""
-
-while true; do
-	if ! getStreamInfo "$VIDEO_TITLE" "$VIDEO_DESCRIPTION" "$VIDEO_PLAYLIST"; then
-		echo "Skipping fetching extra metadata"
-	fi
 
 	#? Splitting the stream into parts
 	# Here we override the video_duratiation variable with the split_video_duration variable.
@@ -116,6 +98,8 @@ while true; do
 
 	# Create the input file with upload parameters
 	echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
+
+	echo $VIDEO_TITLE #! added for split debugging
 
 	# Pass the stream from streamlink to youtubeuploader and then send the file to the void (dev/null)
 	streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
