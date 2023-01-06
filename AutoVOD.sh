@@ -90,15 +90,27 @@ while true; do
 		VIDEO_TITLE="$VIDEO_TITLE - Part $CURRENT_PART"
 	fi
 
+	trap "rm -f stream.tmp" INT # Delete that file if we get interrupted
+
 	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-ads --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
 
 	echo "Checking twitch.tv/"$STREAMER_NAME "for a stream"
 
-	# Create the input file with upload parameters
-	echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
+	if [ "$UPLOAD_SERVICE" = "youtube" ]; then
+		# Create the input file with upload parameters
+		echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$YOUTUBE_VIDEO_VISIBILITY"'","description":"'"$YOUTUBE_VIDEO_DESCRIPTION"'","playlistTitles":["'"${YOUTUBE_VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
 
-	# Pass the stream from streamlink to youtubeuploader and then send the file to the void (dev/null)
-	streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
+		# Pass the stream from streamlink to youtubeuploader and then send the file to the void (dev/null)
+		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
+	elif [ "$UPLOAD_SERVICE" = "s3" ]; then
+		streamlink twitch.tv/$STREAMER_NAME best -o - >stream.tmp
+		aws s3api put-object --bucket $S3_BUCKET --key $S3_OBJECT_KEY --body stream.tmp --endpoint-url $S3_ENDPOINT_URL >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
+		wait # Wait untill its done uploading before deleting the file
+		rm -f stream.tmp
+	else
+		echo "Invalid upload service specified: $UPLOAD_SERVICE" >&2
+		exit 1
+	fi
 
 	echo "Trying again in 1 minute"
 	sleep 60
