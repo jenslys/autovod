@@ -54,10 +54,10 @@ while true; do
 		if [ "$json" = "Too many requests, please try again later." ]; then
 			echo "$json"
 			echo ""
+		else
+			STREAMER_TITLE=$(echo "$json" | jq -r '.stream_title')
+			STREAMER_GAME=$(echo "$json" | jq -r '.stream_game')
 		fi
-
-		STREAMER_TITLE=$(echo "$json" | jq -r '.stream_title')
-		STREAMER_GAME=$(echo "$json" | jq -r '.stream_game')
 
 		if [ "$STREAMER_TITLE" = null ]; then
 			echo "Stream seems offline, can't fetch metadata."
