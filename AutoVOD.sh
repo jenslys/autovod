@@ -29,13 +29,11 @@ STREAMER_NAME=$name
 echo "Selected streamer: $STREAMER_NAME"
 config_file="$STREAMER_NAME.config"
 
-#? Check if requrired files exists
-# The script wont work if these files are missing.
-# So we check if they exists, if not we exit the script.
-if test -f request.token -a -f client_secrets.json -a -f "$config_file"; then
-	echo "All required files exist"
+#? Check if the config exists
+if test -f "$config_file"; then
+	echo "Found config file"
 else
-	echo "One or more required files are missing"
+	echo "Config file is missing"
 	exit 1
 fi
 
@@ -108,6 +106,16 @@ while true; do
 	echo "Checking twitch.tv/"$STREAMER_NAME "for a stream"
 
 	if [ "$UPLOAD_SERVICE" = "youtube" ]; then
+		#? Check if requrired files exists
+		# The script wont work if these files are missing.
+		# So we check if they exists, if not we exit the script.
+		if test -f request.token -a -f client_secrets.json -a -f "$config_file"; then
+			echo "All required files exist"
+		else
+			echo "One or more required files are missing"
+			exit 1
+		fi
+
 		# Create the input file with upload parameters
 		echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
 
