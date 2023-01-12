@@ -40,7 +40,7 @@ while true; do
 		# Src code for this: https://github.com/jenslys/twitch-api-wrapper
 
 		# Store the orignal values
-		variables=("VIDEO_TITLE" "VIDEO_PLAYLIST" "VIDEO_DESCRIPTION")
+		variables=("VIDEO_TITLE" "VIDEO_PLAYLIST" "VIDEO_DESCRIPTION" "S3_OBJECT_KEY")
 		for var in "${variables[@]}"; do
 			original_var=original_$var
 			eval "$original_var=\$$var"
