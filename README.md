@@ -4,10 +4,10 @@
 
 ![Releases](https://img.shields.io/github/v/release/jenslys/AutoVOD.svg)
 
-This script automates downloading and uploading Twitch.TV VODs to Youtube.
-Broadcasts are downloaded in realtime, the best quality available, no transcoding, and sent directly to YouTube, meaning no video is stored on the disk and the stream is directly sent back to YouTube.
+This script automates downloading and uploading Twitch.TV VODs to either Youtube or an S3 bucket.
+Broadcasts are downloaded in realtime, the best quality available, no transcoding, and sent directly to the selected upload provider, meaning no video is stored on the disk and the stream is directly sent back to the upload provider.
 
-The script checks every minute if the selected streamer is live, if the streamer is; it starts immediately uploading the stream to YouTube. After the stream is finished, the video gets processed by YouTube and made public.
+The script checks every minute if the selected streamer is live, if the streamer is; it starts immediately uploading the stream. After the stream is finished, the video gets processed.
 
 ## Table of contents
 
@@ -50,13 +50,29 @@ pip3 install --upgrade streamlink
 apt-get install jq
 ```
 
-#### YouTubeUploader
+#### For Youtube (Optional)
+<details>
+<summary>YoutubeUploader</summary>
+<br>
 
 ```bash
 wget https://github.com/porjo/youtubeuploader/releases/download/22.03/youtubeuploader_22.03_Linux_x86_64.tar.gz
 tar -xvf youtubeuploader_22.03_Linux_x86_64.tar.gz && rm youtubeuploader_22.03_Linux_x86_64.tar.gz
 mv youtubeuploader /usr/local/bin/youtubeuploader
 ```
+</details>
+
+#### For S3 (Optional)
+<details>
+<summary>AWS-CLI</summary>
+<br>
+
+```bash
+apt-get install awscli
+```
+</details>
+
+
 
 #### AutoVOD
 
@@ -78,6 +94,11 @@ I would recommend [Terrahost](https://terrahost.com/virtual-servers) <sub><sup>(
 
 ## Setup
 
+### Youtube setup
+<details>
+<summary>Instructions</summary>
+<br>
+
 Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 
 1. Create an account on [Google Developers Console](https://console.developers.google.com)
@@ -97,6 +118,8 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 
 **Note**
 To be able to upload videos as either "Unlisted or Public" and upload multiple videos a day, you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube. Without an audit your videos will be locked as private and you are limited to how many videos you can upload before you reach a quota.
+
+</details>
 
 ## Usage
 
