@@ -34,17 +34,17 @@ source $config_file
 echo ""
 
 while true; do
+	# Store the orignal values
+	variables=("VIDEO_TITLE" "VIDEO_PLAYLIST" "VIDEO_DESCRIPTION" "S3_OBJECT_KEY")
+	for var in "${variables[@]}"; do
+		original_var=original_$var
+		eval "$original_var=\$$var"
+	done
+
 	if [[ "$API_CALLS" == "true" ]]; then
 		#? Fetching stream metadata
 		# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 		# Src code for this: https://github.com/jenslys/twitch-api-wrapper
-
-		# Store the orignal values
-		variables=("VIDEO_TITLE" "VIDEO_PLAYLIST" "VIDEO_DESCRIPTION" "S3_OBJECT_KEY")
-		for var in "${variables[@]}"; do
-			original_var=original_$var
-			eval "$original_var=\$$var"
-		done
 
 		echo "Trying to fetching stream metadata"
 		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
