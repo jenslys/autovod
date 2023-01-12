@@ -15,12 +15,13 @@ RUN 	tar -xvf youtubeuploader_22.03_Linux_x86_64.tar.gz && rm youtubeuploader_22
 
 # Copy the required files
 
-COPY	${TWITCH_USER}.config /autoVOD/${TWITCH_USER}.config
+COPY	${TWITCH_USER}.config /autoVOD/dockeruser.config
 COPY	AutoVOD.sh /autoVOD/AutoVOD.sh
 COPY	client_secrets.json /autoVOD/client_secrets.json
 COPY	request.token /autoVOD/request.token
 
+
 # Start AutoVod
 
 WORKDIR /autoVOD
-CMD	["bash", "AutoVOD.sh -n $TWITCH_USER"]
+CMD	["bash", "AutoVOD.sh", "-ndockeruser"]
