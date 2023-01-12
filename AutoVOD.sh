@@ -89,7 +89,7 @@ while true; do
 			CURRENT_PART=1
 		fi
 		# Add " - Part $CURRENT_PART" to the end of the VIDEO_TITLE variable
-		VIDEO_TITLE="$VIDEO_TITLE - Part $CURRENT_PART"
+		VIDEO_TITLE="$VIDEO_TITLE""-""Part_""$CURRENT_PART"
 	fi
 
 	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-ads --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
