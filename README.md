@@ -78,7 +78,6 @@ apt-get install awscli
 ```
 </details>
 
-
 #### AutoVOD
 
 ```bash
@@ -127,7 +126,6 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 To be able to upload videos as either "Unlisted or Public" and upload multiple videos a day, you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube. Without an audit your videos will be locked as private and you are limited to how many videos you can upload before you reach a quota.
 
 </details>
-
 
 ### S3 setup
 
@@ -187,7 +185,7 @@ pm2 logs
 
 ## Using docker
 
-This script can be used inside a docker container. To build a container, first execute all Setup-Steps, then build the image:
+This script can be used inside a docker container. To build a container, first execute all [Setup-Steps](#setup), then build the image:
 
 ```bash
 docker build --build-arg TWITCH_USER=<your twitch username> -t autovod .
