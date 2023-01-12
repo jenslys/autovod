@@ -2,3 +2,6 @@ client_secrets.json
 request.token
 .DS_Store
 /tests/
+sample.mp4
+*.config
+!default.config
