@@ -5,19 +5,10 @@ TIME_CLOCK='date +%H:%M:%S'
 
 # Function to get the value of the --name option
 fetch_args() {
-	# Parse command-line options
 	while getopts ":n:" opt; do
 		case $opt in
-		n)
+		*n)
 			name=$OPTARG
-			;;
-		\?)
-			echo "Invalid option: -$OPTARG" >&2
-			exit 1
-			;;
-		:)
-			echo "Option -$OPTARG requires an argument." >&2
-			exit 1
 			;;
 		esac
 	done
@@ -122,7 +113,10 @@ while true; do
 		# Pass the stream from streamlink to youtubeuploader and then send the file to the void (dev/null)
 		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
 	elif [ "$UPLOAD_SERVICE" = "s3" ]; then
-		streamlink twitch.tv/$STREAMER_NAME best -o - >stream.tmp
+		# Saves the stream to a temp file stream.tmp
+		# Then when the stream is finished, uploads the file to S3
+		# https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html
+		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >stream.tmp
 		aws s3api put-object --bucket $S3_BUCKET --key $S3_OBJECT_KEY --body stream.tmp --endpoint-url $S3_ENDPOINT_URL >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
 		wait # Wait untill its done uploading before deleting the file
 		rm -f stream.tmp

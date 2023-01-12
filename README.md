@@ -7,7 +7,7 @@
 This script automates downloading and uploading Twitch.TV VODs to either Youtube or an S3 bucket.
 Broadcasts are downloaded in realtime, the best quality available, no transcoding, and sent directly to the selected upload provider, meaning no video is stored on the disk and the stream is directly sent back to the upload provider.
 
-The script checks every minute if the selected streamer is live, if the streamer is; it starts immediately uploading the stream. After the stream is finished, the video gets processed.
+The script checks every minute if the selected streamer is live, if the streamer is; it immediately starts uploading the stream. After the stream has eneded, the video gets processed.
 
 ## Table of contents
 
@@ -50,9 +50,12 @@ pip3 install --upgrade streamlink
 apt-get install jq
 ```
 
-#### For Youtube (Optional)
+#### YoutubeUploader
+
+If you want to upload to YouTube
+
 <details>
-<summary>YoutubeUploader</summary>
+<summary>Instructions</summary>
 <br>
 
 ```bash
@@ -62,16 +65,18 @@ mv youtubeuploader /usr/local/bin/youtubeuploader
 ```
 </details>
 
-#### For S3 (Optional)
+#### AWS-CLI
+
+If you want to upload to an S3 Bucket
+
 <details>
-<summary>AWS-CLI</summary>
+<summary>Instrutions</summary>
 <br>
 
 ```bash
 apt-get install awscli
 ```
 </details>
-
 
 
 #### AutoVOD
@@ -88,6 +93,7 @@ wget -c -O sample.mp4 https://download.samplelib.com/mp4/sample-5s.mp4
 ```
 
 #### Note
+
 Daily uploading high quality files/streams to a server may be resource intensive, hence i would recommend using a hosting provider that offers large or unmetered amount of bandwith. Server resource exhaustion may cause vods to fail uploading.
 
 I would recommend [Terrahost](https://terrahost.com/virtual-servers) <sub><sup>(Not sponsored)</sup></sub><br> They offer budget VPS with unmetered* bandwidth.
@@ -95,6 +101,7 @@ I would recommend [Terrahost](https://terrahost.com/virtual-servers) <sub><sup>(
 ## Setup
 
 ### Youtube setup
+
 <details>
 <summary>Instructions</summary>
 <br>
@@ -118,6 +125,24 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 
 **Note**
 To be able to upload videos as either "Unlisted or Public" and upload multiple videos a day, you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube. Without an audit your videos will be locked as private and you are limited to how many videos you can upload before you reach a quota.
+
+</details>
+
+
+### S3 setup
+
+<details>
+<summary>Instructions</summary>
+
+#### Refer to your S3-Provider on how to configure the AWS-CLI
+
+Common S3 providers:
+
+- [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/setup-aws-cli.html)
+- [Cloudflare R2](https://developers.cloudflare.com/r2/examples/aws-cli/)
+- [Wasabi S3](https://wasabi-support.zendesk.com/hc/en-us/articles/115001910791-How-do-I-use-AWS-CLI-with-Wasabi-)
+- [Google Cloud Storage](https://developers.cloudflare.com/r2/examples/aws-cli/)
+- [Backblaze B2](https://help.backblaze.com/hc/en-us/articles/360047779633-Quickstart-Guide-for-AWS-CLI-and-Backblaze-B2-Cloud-Storage)
 
 </details>
 
