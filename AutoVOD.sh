@@ -1,7 +1,7 @@
 #!/bin/bash
 
-TIME_DATE='date +%m.%d.%y'
-TIME_CLOCK='date +%H:%M:%S'
+TIME_DATE='date +%m-%d-%y'
+TIME_CLOCK='date +%H_%M_%S'
 
 # Function to get the value of the --name option
 fetch_args() {
