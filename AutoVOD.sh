@@ -88,8 +88,9 @@ while true; do
 			# Reset CURRENT_PART to 1 if the current date is not equal to TIME_DATE_CHECK
 			CURRENT_PART=1
 		fi
-		# Add " - Part $CURRENT_PART" to the end of the VIDEO_TITLE variable
+		# Add "-Part_$CURRENT_PART" to the end of the VIDEO_TITLE variable and S3_OBJECT_KEY variable
 		VIDEO_TITLE="$VIDEO_TITLE""-""Part_""$CURRENT_PART"
+		S3_OBJECT_KEY="$S3_OBJECT_KEY""-""Part_""$CURRENT_PART"
 	fi
 
 	STREAMLINK_OPTIONS="best --hls-duration $VIDEO_DURATION --twitch-disable-hosting --twitch-disable-ads --twitch-disable-reruns -O --loglevel error" # https://streamlink.github.io/cli.html#twitch
@@ -117,7 +118,7 @@ while true; do
 		# Then when the stream is finished, uploads the file to S3
 		# https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html
 		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >stream.tmp
-		aws s3api put-object --bucket $S3_BUCKET --key $S3_OBJECT_KEY --body stream.tmp --endpoint-url $S3_ENDPOINT_URL >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
+		aws s3api put-object --bucket $S3_BUCKET --key "$S3_OBJECT_KEY.mkv" --body stream.tmp --endpoint-url $S3_ENDPOINT_URL >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
 		wait # Wait untill its done uploading before deleting the file
 		rm -f stream.tmp
 	else
