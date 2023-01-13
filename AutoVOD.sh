@@ -93,7 +93,7 @@ while true; do
 		S3_OBJECT_KEY="$S3_OBJECT_KEY""-""Part_""$CURRENT_PART"
 	fi
 
-	STREAMLINK_OPTIONS="$STREAMLINK_QUALITY --hls-duration $VIDEO_DURATION $STREAMLINK_OPTIONS -O --loglevel $STREAMLINK_LOGS" # https://streamlink.github.io/cli.html#twitch
+	STREAMLINK_OPTIONS="$STREAMLINK_QUALITY --hls-duration $VIDEO_DURATION $STREAMLINK_FLAGS -O --loglevel $STREAMLINK_LOGS" # https://streamlink.github.io/cli.html#twitch
 
 	echo "Checking twitch.tv/"$STREAMER_NAME "for a stream"
 
