@@ -4,8 +4,13 @@
 
 ![Releases](https://img.shields.io/github/v/release/jenslys/AutoVOD.svg)
 
-This script automates downloading and uploading Twitch.TV VODs to either Youtube or an S3 bucket.
-Broadcasts are downloaded in realtime, the best quality available, no transcoding, and sent directly to the selected upload provider, meaning no video is stored on the disk and the stream is directly sent back to the upload provider.
+This script automates downloading and uploading Twitch.TV VODs to a selected upload provider.
+Broadcasts are downloaded in realtime, in the best quality available.
+
+Current available upload providers:
+
+- **Youtube** (Needs no transcoding, so no file is stored on the disc)
+- **S3** (Currently needs transcoding, so the stream is temporally stored on the disc)
 
 The script checks every minute if the selected streamer is live, if the streamer is; it immediately starts uploading the stream. After the stream has eneded, the video gets processed.
 
