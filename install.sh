@@ -8,7 +8,7 @@ printf "${g}[$now] Updating and upgrading packages...${c}\n"
 apt-get -qq update && apt-get -qq upgrade
 
 printf "${g}[$now] Installing Packages${c}\n"
-sudo apt-get install npm python3-pip tar jq -y
+sudo apt-get install npm wget curl git python3-pip tar jq -y
 
 printf "${g}[$now] Installing PM2${c}\n"
 npm install pm2 -g && pm2 startup
@@ -17,9 +17,9 @@ printf "${g}[$now] Installing Streamlink${c}\n"
 pip3 install --upgrade streamlink
 
 printf "${g}[$now] Installing YouTubeUploader${c}\n"
-wget https://github.com/porjo/youtubeuploader/releases/download/22.03/youtubeuploader_22.03_Linux_x86_64.tar.gz
-tar -xvf youtubeuploader_22.03_Linux_x86_64.tar.gz && rm youtubeuploader_22.03_Linux_x86_64.tar.gz
-mv youtubeuploader_22.03_Linux_x86_64 /usr/local/bin/youtubeuploader
+wget https://github.com/porjo/youtubeuploader/releases/download/23.01/youtubeuploader_23.01_Linux_x86_64.tar.gz
+tar -xvf youtubeuploader_23.01_Linux_x86_64.tar.gz && rm youtubeuploader_23.01_Linux_x86_64.tar.gz
+mv youtubeuploader /usr/local/bin/youtubeuploader
 
 printf "${g}[$now] Installing AutoVOD${c}\n"
 git clone https://github.com/jenslys/autovod.git && cd autovod

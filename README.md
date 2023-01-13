@@ -22,6 +22,7 @@ The script checks every minute if the selected streamer is live, if the streamer
 - [Setup](#setup)
 - [Usage](#usage)
 - [Docker](#using-docker)
+- [FAQ](#faq)
 - [Credit](#credit)
 
 ## Standalone Installation
@@ -202,6 +203,57 @@ You can now run this container
 ```bash
 docker run -d autovod 
 ```
+
+## FAQ
+
+<details>
+<summary>I am getting "[Errno 32] Broken pipe"</summary>
+<br>
+
+There are multiple reasons this error can occur, check the following
+
+#### YouTube
+
+- That you have not reached your YouTube quota
+- That your YouTube credential files have not expired
+- You can check these by running `youtubeuploader --filename sample.mp4`
+    then checking the output.
+
+#### S3
+
+- You have configured `aws` correctly
+- You have insereted the correct variables inside the config.
+
+#### Server resource exhaustion
+
+- Uploading vods require alot of bandwith, check if the upload fails because your provider is limiting or cutting of the upload.
+
+</details>
+
+<details>
+<summary>My tokens keep getting revoked</summary>
+<br>
+
+Visit the [OAuth consent screen](https://console.cloud.google.com/apis/credentials/consent) and click on the publish button to change from the testing status to the published status.
+
+</details>
+
+<details>
+<summary>My video keeps getting marked as private</summary>
+<br>
+
+To be able to upload videos as either "Unlisted or Public" and upload multiple videos a day, you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube. Without an audit your videos will be locked as private and you are limited to how many videos you can upload before you reach a quota.
+
+</details>
+
+<details>
+<summary>I cant upload videos longer then 15 min</summary>
+<br>
+
+You will need to [verify](http://youtube.com/verify) your phone number on youtube to upload videos longer then 15 min
+
+</details>
+
 
 ## Credit
 
