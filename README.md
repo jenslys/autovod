@@ -9,10 +9,10 @@ Broadcasts are downloaded in realtime, in the best quality available.
 
 Current available upload providers:
 
-- **Youtube** (Needs no transcoding, so no file is stored on the disc)
-- **S3** (Currently needs transcoding, so the stream is temporally stored on the disc)
+- **Youtube** (Needs no transcoding, so no file is stored on the disc. The stream is **directly** sent to YouTube)
+- **S3** (Currently needs transcoding, so the stream is **temporally stored** on the disc before uploading to S3)
 
-The script checks every minute if the selected streamer is live, if the streamer is; it immediately starts uploading the stream. After the stream has ended, the video gets processed.
+The script checks every minute if the selected streamer is live, if the streamer is; it immediately starts uploading/downloading the stream.
 
 ## Installation
 
@@ -69,12 +69,13 @@ mv youtubeuploader /usr/local/bin/youtubeuploader
 If you want to upload to an S3 Bucket
 
 <details>
-<summary>Instrutions</summary>
+<summary>Instructions</summary>
 <br>
 
 ```bash
 apt-get install awscli
 ```
+
 </details>
 
 #### AutoVOD
@@ -107,7 +108,7 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 1. Enable the [YouTube Data API (APIs & Auth -> Libary)](https://console.cloud.google.com/apis/library/youtube.googleapis.com)
 1. Go to the [Consent Screen](https://console.cloud.google.com/apis/credentials/consent) section, setup an external application, fill in your information and add the user/s that are going to be using the app (Channel/s you are uploading videos to). Enable the **".../auth/youtube.upload"** scope. Then save.
 1. Go to the [Credentials](https://console.cloud.google.com/apis/api/youtube.googleapis.com/credentials) section, click "Create credentials" and select "OAuth client ID", select Application Type 'Web Application'. Add a 'Authorised redirect URI' of `http://localhost:8080/oauth2callback`
-1. Once created click the download (JSON) button in the list and saving it as `client_secrets.json`
+1. Once created click the download (JSON) button in the list and save it as `client_secrets.json`
 1. Getting token from YouTube:
     1. Due to [recent changes](https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html#disallowed-oob) to the Google TOS, if you are running this utility for the first time and want to run it on a Headless server, you have to first run `youtubeuploader` on your local machine (Somewhere with a web browser)
 
@@ -115,7 +116,7 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
         youtubeuploader -filename sample.mp4
         ```
 
-    1. and then simply copy `request.token` and `client_secrets.json` to the remote host. Make sure these are placed inside the 'autovod' folder
+    1. and then simply copy/move `request.token` and `client_secrets.json` to the remote host. Make sure these are placed inside the `autovod` folder.
 
 **Note**
 To be able to upload videos as either "Unlisted or Public" and upload multiple videos a day, you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube. Without an audit your videos will be locked as private and you are limited to how many videos you can upload before you reach a quota.
@@ -244,7 +245,7 @@ There are multiple reasons this error can occur, check the following
 <summary>My tokens keep getting revoked</summary>
 <br>
 
-Visit the [OAuth consent screen](https://console.cloud.google.com/apis/credentials/consent) and click on the publish button to change from the testing status to the published status.
+- Visit the [OAuth consent screen](https://console.cloud.google.com/apis/credentials/consent) and click on the publish button to change from the testing status to the published status.
 
 </details>
 
@@ -252,15 +253,15 @@ Visit the [OAuth consent screen](https://console.cloud.google.com/apis/credentia
 <summary>My video keeps getting marked as private</summary>
 <br>
 
-To be able to upload videos as either "Unlisted or Public" and upload multiple videos a day, you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube. Without an audit your videos will be locked as private and you are limited to how many videos you can upload before you reach a quota.
+- To be able to upload videos as either "Unlisted or Public" and upload multiple videos a day, you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube. Without an audit your videos will be locked as private and you are limited to how many videos you can upload before you reach a quota.
 
 </details>
 
 <details>
-<summary>I can ́t upload videos longer then 15 minutes</summary>
+<summary>I cant upload videos longer then 15 minutes</summary>
 <br>
 
-You will need to [verify](http://youtube.com/verify) your phone number on youtube to upload videos longer then 15 min
+- You will need to [verify](http://youtube.com/verify) your phone number on youtube to upload videos longer then 15 min
 
 </details>
 
@@ -271,8 +272,8 @@ You will need to [verify](http://youtube.com/verify) your phone number on youtub
 The following files are required for the script to work:
 
 - `nameOfStreamer.config`
-- `request.token` (only if uploading to YouTube)
-- `client_secrets.json` (only if uploading to YouTube)
+- `request.token` (Only if uploading to YouTube)
+- `client_secrets.json` (Only if uploading to YouTube)
 
 It should look something like this:
 
@@ -285,3 +286,7 @@ It should look something like this:
 - YoutubeUploader by [porjo](https://github.com/porjo/youtubeuploader)
 - Streamlink by [streamlink](https://github.com/streamlink/streamlink)
 - Icon by [xyaia](https://macosicons.com/#/u/xyaia)
+
+## License
+
+Licensed under the [GNU General Public License v3.0](LICENSE.md)
