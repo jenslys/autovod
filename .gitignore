@@ -5,3 +5,4 @@ request.token
 sample.mp4
 *.config
 !default.config
+.vscode/*
