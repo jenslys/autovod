@@ -12,20 +12,9 @@ Current available upload providers:
 - **Youtube** (Needs no transcoding, so no file is stored on the disc)
 - **S3** (Currently needs transcoding, so the stream is temporally stored on the disc)
 
-The script checks every minute if the selected streamer is live, if the streamer is; it immediately starts uploading the stream. After the stream has eneded, the video gets processed.
+The script checks every minute if the selected streamer is live, if the streamer is; it immediately starts uploading the stream. After the stream has ended, the video gets processed.
 
-## Table of contents
-
-- [Standalone Installation](#standalone-installation)
-  - [Automatic Installation](#automatic-installation)
-  - [Manual Installation](#manual-installation)
-- [Setup](#setup)
-- [Usage](#usage)
-- [Docker](#using-docker)
-- [FAQ](#faq)
-- [Credit](#credit)
-
-## Standalone Installation
+## Installation
 
 ### Automatic Installation
 
@@ -34,6 +23,9 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/jenslys/autovod/master/ins
 ```
 
 ### Manual Installation
+
+<details>
+<summary>Required packages</summary>
 
 #### PM2
 
@@ -98,11 +90,7 @@ cd autovod
 wget -c -O sample.mp4 https://download.samplelib.com/mp4/sample-5s.mp4
 ```
 
-#### Note
-
-Daily uploading high quality files/streams to a server may be resource intensive, hence i would recommend using a hosting provider that offers large or unmetered amount of bandwith. Server resource exhaustion may cause vods to fail uploading.
-
-I would recommend [Terrahost](https://terrahost.com/virtual-servers) <sub><sup>(Not sponsored)</sup></sub><br> They offer budget VPS with unmetered* bandwidth.
+</details>
 
 ## Setup
 
@@ -132,6 +120,28 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 **Note**
 To be able to upload videos as either "Unlisted or Public" and upload multiple videos a day, you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube. Without an audit your videos will be locked as private and you are limited to how many videos you can upload before you reach a quota.
 
+<details>
+<summary>Tips on passing the audit</summary>
+<br>
+
+I have applied for the audit twice (for two separate projects).
+
+- First time, I was applying because I wanted to archive a particular streamer's streams to youtube.
+- Second time, I was applying because I needed a higher quota for testing this tool
+
+Both times I was accepted fairly easily.
+
+Since this tool isn't very complex, and my goal function isn't that complex either, I typed almost the same thing on all fields, along the lines of: "I am going to upload a certain twitch user VODS to youtube, and need a higher quota, because the streamer streams multiple times a week and for x amount of hours. The tool is internal, so the only person that is authenticating through the tool is me." I also linked/referenced this GitHub page (don't know if that helped my case).
+
+The field that wants you to upload a screen recording of the program; I just screen recorded myself doing the `youtubeuplaoder --filename sample.mp4` command. Since that is how we get the token from youtube.
+
+I didn't spend a lot of time filling out the application.
+It took around 20 days from submission to them accepting the audit.
+
+I am leaving open the GitHub issue regarding this, in case people want to discuss or share the experience: [#32](https://github.com/jenslys/autovod/issues/32)
+
+</details>
+
 </details>
 
 ### S3 setup
@@ -155,7 +165,7 @@ Common S3 providers:
 
 ### Config file
 
-We will create a dedicated config file for the steamer, in case are monitoring multiple streamers with different settings.
+We will create a dedicated config file for each steamer, in case are monitoring multiple streamers with different settings.
 
 #### Create config file
 
@@ -165,7 +175,7 @@ cp default.config StreamerNameHere.config
 
 #### Edit the config
 
-Edit your newly created config with either `nano` or `vim`
+Edit your newly created config
 
 ```bash
 nano StreamerNameHere.config
@@ -207,7 +217,7 @@ docker run -d autovod
 ## FAQ
 
 <details>
-<summary>I am getting "[Errno 32] Broken pipe"</summary>
+<summary>I am getting "[Error 32] Broken pipe"</summary>
 <br>
 
 There are multiple reasons this error can occur, check the following
@@ -222,7 +232,7 @@ There are multiple reasons this error can occur, check the following
 #### S3
 
 - You have configured `aws` correctly
-- You have insereted the correct variables inside the config.
+- You have inserted the correct variables inside the config.
 
 #### Server resource exhaustion
 
@@ -247,13 +257,27 @@ To be able to upload videos as either "Unlisted or Public" and upload multiple v
 </details>
 
 <details>
-<summary>I cant upload videos longer then 15 min</summary>
+<summary>I can ́t upload videos longer then 15 minutes</summary>
 <br>
 
 You will need to [verify](http://youtube.com/verify) your phone number on youtube to upload videos longer then 15 min
 
 </details>
 
+<details>
+<summary>One or more required files are missing</summary>
+<br>
+
+The following files are required for the script to work:
+
+- `nameOfStreamer.config`
+- `request.token` (only if uploading to YouTube)
+- `client_secrets.json` (only if uploading to YouTube)
+
+It should look something like this:
+
+![Screenshot](https://cdn.lystad.io/autovod_folder.jpeg)
+</details>
 
 ## Credit
 
