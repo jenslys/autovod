@@ -2,6 +2,7 @@
 
 TIME_DATE='date +%m-%d-%y'
 TIME_CLOCK='date +%H_%M_%S'
+CC='date +%H:%M:%S''|'
 
 # Function to get the value of the --name option
 fetch_args() {
@@ -17,19 +18,19 @@ fetch_args() {
 # Call the function to get the value of the --name option
 fetch_args "$@"
 STREAMER_NAME=$name
-echo "Selected streamer: $STREAMER_NAME"
+echo "$($CC) Selected streamer: $STREAMER_NAME"
 config_file="$STREAMER_NAME.config"
 
 #? Check if the config exists
 if test -f "$config_file"; then
-	echo "Found config file"
+	echo "$($CC) Found config file"
 else
-	echo "Config file is missing"
+	echo "$($CC) Config file is missing"
 	exit 1
 fi
 
-echo "Starting AutoVOD"
-echo "Loading $config_file"
+echo "$($CC) Starting AutoVOD"
+echo "$($CC) Loading $config_file"
 source $config_file
 echo ""
 
@@ -46,10 +47,10 @@ while true; do
 		# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 		# Src code for this: https://github.com/jenslys/twitch-api-wrapper
 
-		echo "Trying to fetching stream metadata"
+		echo "$($CC) Trying to fetching stream metadata"
 		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
 		if [ "$json" = "Too many requests, please try again later." ]; then
-			echo "$json"
+			echo "$($CC) $json"
 			echo ""
 		else
 			FETCHED_TITLE=$(echo "$json" | jq -r '.stream_title')
@@ -57,19 +58,18 @@ while true; do
 		fi
 
 		if [ "$STREAMER_TITLE" = null ]; then
-			echo "Stream seems offline, can't fetch metadata."
+			echo "$($CC) Stream seems offline, can't fetch metadata."
 			echo ""
 		else
-			echo "Stream is online!"
-			echo "Current Title: ""$FETCHED_TITLE"
-			echo "Current Game: ""$FETCHED_GAME"
+			echo "$($CC) Stream is online!"
+			echo "$($CC) Current Title: ""$FETCHED_TITLE"
+			echo "$($CC) Current Game: ""$FETCHED_GAME"
 
 			#? Replace the variables with the fetched metadata
 			for var in "${variables[@]}"; do
 				eval "$var=\${$var//\$STREAMER_TITLE/$FETCHED_TITLE}"
 				eval "$var=\${$var//\$STREAMER_GAME/$FETCHED_GAME}"
 			done
-
 			echo ""
 		fi
 	fi
@@ -95,16 +95,16 @@ while true; do
 
 	STREAMLINK_OPTIONS="$STREAMLINK_QUALITY --hls-duration $VIDEO_DURATION $STREAMLINK_FLAGS -O --loglevel $STREAMLINK_LOGS" # https://streamlink.github.io/cli.html#twitch
 
-	echo "Checking twitch.tv/"$STREAMER_NAME "for a stream"
+	echo "$($CC) Checking twitch.tv/"$STREAMER_NAME "for a stream"
 
 	if [ "$UPLOAD_SERVICE" = "youtube" ]; then
 		#? Check if requrired files exists
 		# The script wont work if these files are missing.
 		# So we check if they exists, if not we exit the script.
 		if test -f request.token -a -f client_secrets.json -a -f "$config_file"; then
-			echo "All required files exist"
+			echo "$($CC) All required files found"
 		else
-			echo "One or more required files are missing"
+			echo "$($CC) One or more required files are missing"
 			exit 1
 		fi
 
@@ -122,7 +122,7 @@ while true; do
 		wait # Wait untill its done uploading before deleting the file
 		rm -f stream.tmp
 	else
-		echo "Invalid upload service specified: $UPLOAD_SERVICE" >&2
+		echo "$($CC) Invalid upload service specified: $UPLOAD_SERVICE" >&2
 		exit 1
 	fi
 
@@ -131,6 +131,6 @@ while true; do
 		eval "$var=\$original_$var"
 	done
 
-	echo "Trying again in 1 minute"
+	echo "$($CC) Trying again in 1 minute"
 	sleep 60
 done
