@@ -117,10 +117,24 @@ while true; do
 		# Saves the stream to a temp file stream.tmp
 		# Then when the stream is finished, uploads the file to S3
 		# https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html
-		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >stream.tmp
-		aws s3api put-object --bucket $S3_BUCKET --key "$S3_OBJECT_KEY.mkv" --body stream.tmp --endpoint-url $S3_ENDPOINT_URL >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
-		wait # Wait untill its done uploading before deleting the file
-		rm -f stream.tmp
+		temp_file="stream.tmp"
+		temp_file_encoded="stream_encoded.tmp"
+		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >$temp_file
+
+		if [ "$RE_ENCODE" == "true" ]; then
+			#? Re-encode the stream before uploading it to S3
+			# This is useful if you want to re-encode the stream to a different codec, quality or file size.
+			# https://ffmpeg.org/ffmpeg.html
+			echo "$($CC) Re-encoding stream"
+			ffmpeg -i $temp_file -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $temp_file_encoded >/dev/null 2>&1
+			wait                         # Wait untill its done encoding before deleting the file
+			rm -f $temp_file             # Delete the original file
+			temp_file=stream_encoded.tmp # Set the temp_file variable to the encoded file
+		fi
+
+		aws s3api put-object --bucket $S3_BUCKET --key "$S3_OBJECT_KEY.mkv" --body $temp_file --endpoint-url $S3_ENDPOINT_URL >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
+		wait             # Wait untill its done uploading before deleting the file
+		rm -f $temp_file # Delete the temp file
 	else
 		echo "$($CC) Invalid upload service specified: $UPLOAD_SERVICE" >&2
 		exit 1

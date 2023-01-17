@@ -78,6 +78,21 @@ apt-get install awscli
 
 </details>
 
+#### FFMPEG
+
+If you want to enable the re-encoding feature
+
+<details>
+<summary>Instructions</summary>
+<br>
+
+```bash
+apt-get install ffmpeg
+```
+
+</details>
+
+
 #### AutoVOD
 
 ```bash
