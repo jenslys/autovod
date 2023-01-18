@@ -47,7 +47,7 @@ while true; do
 		# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 		# Src code for this: https://github.com/jenslys/twitch-api-wrapper
 
-		echo "$($CC) Trying to fetching stream metadata"
+		echo "$($CC) Trying to fetch stream metadata"
 		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
 		if [ "$json" = "Too many requests, please try again later." ]; then
 			echo "$($CC) $json"
@@ -58,7 +58,7 @@ while true; do
 		fi
 
 		if [ "$STREAMER_TITLE" = null ]; then
-			echo "$($CC) Stream seems offline, can't fetch metadata."
+			echo "$($CC) Stream seems offline, not able to fetch metadata."
 			echo ""
 		else
 			echo "$($CC) Stream is online!"
@@ -117,10 +117,23 @@ while true; do
 		# Saves the stream to a temp file stream.tmp
 		# Then when the stream is finished, uploads the file to S3
 		# https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html
-		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >stream.tmp
-		aws s3api put-object --bucket $S3_BUCKET --key "$S3_OBJECT_KEY.mkv" --body stream.tmp --endpoint-url $S3_ENDPOINT_URL >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
-		wait # Wait untill its done uploading before deleting the file
-		rm -f stream.tmp
+		temp_file="stream.tmp"
+
+		if [ "$RE_ENCODE" == "true" ]; then
+			#? Re-encode the stream before uploading it to S3
+			# This is useful if you want to re-encode the stream to a different codec, quality or file size.
+			# Pipes the stream from streamlink to ffmpeg and then to the matroska temp file
+			# https://ffmpeg.org/ffmpeg.html
+
+			echo "$($CC) Re-encoding stream"
+			streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $temp_file >/dev/null 2>&1
+		else
+			streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >$temp_file
+		fi
+
+		aws s3api put-object --bucket $S3_BUCKET --key "$S3_OBJECT_KEY.mkv" --body $temp_file --endpoint-url $S3_ENDPOINT_URL >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
+		wait             # Wait untill its done uploading before deleting the file
+		rm -f $temp_file # Delete the temp file
 	else
 		echo "$($CC) Invalid upload service specified: $UPLOAD_SERVICE" >&2
 		exit 1
