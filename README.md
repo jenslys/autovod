@@ -146,14 +146,13 @@ I have applied for the audit twice (for two separate projects).
 
 Both times I was accepted fairly easily.
 
-Since this tool isn't very complex, and my goal function isn't that complex either, I typed almost the same thing on all fields, along the lines of:
+Since this tool isn't very complex, I typed almost the same thing on all fields, along the lines of:
 > "I am going to upload a certain twitch user VODS to YouTube and need a higher quote because the streamer streams multiple times a week for x amount of hours. The tool is internal, so the only person that is authenticating through it is me. This is using Youtube Data API to upload to videos."
 
-I also linked/referenced this GitHub page (don't know if that helped my case).
+I also linked/referenced this GitHub page (Don't know if that helped my case).
 
-The field that wants you to upload a screen recording of the program; I just screen recorded myself doing the `youtubeuplaoder --filename sample.mp4` command. Since that is how we get the token from youtube. You could also possibly record the process starting AutoVOD.
+The field that wants you to upload a screen recording of the program; I just screen recorded myself doing the `youtubeuplaoder --filename sample.mp4` command. Since that is how we get the token from youtube. You could also record the process starting AutoVOD.
 
-I didn't spend a lot of time filling out the application.
 > **Note**
 > It took around 20 days from submission to them accepting the audit.
 
