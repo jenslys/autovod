@@ -92,7 +92,6 @@ apt-get install ffmpeg
 
 </details>
 
-
 #### AutoVOD
 
 ```bash
@@ -133,8 +132,8 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 
     1. and then simply copy/move `request.token` and `client_secrets.json` to the remote host. Make sure these are placed inside the `autovod` folder.
 
-**Note**
-To be able to upload videos as either "Unlisted or Public" and upload multiple videos a day, you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube. Without an audit your videos will be locked as private and you are limited to how many videos you can upload before you reach a quota.
+> **Note**
+> To be able to upload videos as either "Unlisted or Public" and upload multiple videos a day, you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube. Without an audit your videos will be locked as private and you are limited to how many videos you can upload before you reach a quota.
 
 <details>
 <summary>Tips on passing the audit</summary>
@@ -142,19 +141,23 @@ To be able to upload videos as either "Unlisted or Public" and upload multiple v
 
 I have applied for the audit twice (for two separate projects).
 
-- First time, I was applying because I wanted to archive a particular streamer's streams to youtube.
-- Second time, I was applying because I needed a higher quota for testing this tool
+- First time, I was applying because I wanted to archive a particular streamer's streams to YouTube.
+- Second time, I was applying because I needed a higher quota for the testing and development of AutoVOD.
 
 Both times I was accepted fairly easily.
 
-Since this tool isn't very complex, and my goal function isn't that complex either, I typed almost the same thing on all fields, along the lines of: "I am going to upload a certain twitch user VODS to youtube, and need a higher quota, because the streamer streams multiple times a week and for x amount of hours. The tool is internal, so the only person that is authenticating through the tool is me." I also linked/referenced this GitHub page (don't know if that helped my case).
+Since this tool isn't very complex, and my goal function isn't that complex either, I typed almost the same thing on all fields, along the lines of:
+> "I am going to upload a certain twitch user VODS to YouTube and need a higher quote because the streamer streams multiple times a week for x amount of hours. The tool is internal, so the only person that is authenticating through it is me. This is using Youtube Data API to upload to videos."
 
-The field that wants you to upload a screen recording of the program; I just screen recorded myself doing the `youtubeuplaoder --filename sample.mp4` command. Since that is how we get the token from youtube.
+I also linked/referenced this GitHub page (don't know if that helped my case).
+
+The field that wants you to upload a screen recording of the program; I just screen recorded myself doing the `youtubeuplaoder --filename sample.mp4` command. Since that is how we get the token from youtube. You could also possibly record the process starting AutoVOD.
 
 I didn't spend a lot of time filling out the application.
-It took around 20 days from submission to them accepting the audit.
+> **Note**
+> It took around 20 days from submission to them accepting the audit.
 
-I am leaving open the GitHub issue regarding this, in case people want to discuss or share the experience: [#32](https://github.com/jenslys/autovod/issues/32)
+I am leaving open the GitHub issue regarding this, in case people want to discuss or share their experience: [#32](https://github.com/jenslys/autovod/issues/32)
 
 </details>
 
