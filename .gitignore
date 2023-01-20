@@ -6,3 +6,4 @@ sample.mp4
 *.config
 !default.config
 .vscode/*
+.nova/*

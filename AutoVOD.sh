@@ -31,6 +31,7 @@ fi
 
 echo "$($CC) Starting AutoVOD"
 echo "$($CC) Loading $config_file"
+# shellcheck source=$STREAMER_NAME.config
 source $config_file
 echo ""
 
@@ -75,7 +76,7 @@ while true; do
 	fi
 
 	#? Splitting the stream into parts
-	# Here we override the video_duratiation variable with the split_video_duration variable.
+	# Here we override the video_duration variable with the split_video_duration variable.
 	# We then compare the current date with the date from the last time we ran the script.
 	# if the date is the same, we add 1 to the current part variable.
 	# if the date is different, we reset the current part variable to 1.
@@ -132,7 +133,7 @@ while true; do
 		fi
 
 		aws s3api put-object --bucket $S3_BUCKET --key "$S3_OBJECT_KEY.mkv" --body $temp_file --endpoint-url $S3_ENDPOINT_URL >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
-		wait             # Wait untill its done uploading before deleting the file
+		wait             # Wait until its done uploading before deleting the file
 		rm -f $temp_file # Delete the temp file
 	else
 		echo "$($CC) Invalid upload service specified: $UPLOAD_SERVICE" >&2
