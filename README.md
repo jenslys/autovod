@@ -80,7 +80,7 @@ apt-get install awscli
 
 #### FFMPEG
 
-If you want to enable the re-encoding feature
+If you want to enable the re-encoding or re-streaming feature
 
 <details>
 <summary>Instructions</summary>
