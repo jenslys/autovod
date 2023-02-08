@@ -135,6 +135,12 @@ while true; do
 		aws s3api put-object --bucket $S3_BUCKET --key "$S3_OBJECT_KEY.mkv" --body $temp_file --endpoint-url $S3_ENDPOINT_URL >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
 		wait             # Wait until its done uploading before deleting the file
 		rm -f $temp_file # Delete the temp file
+	elif [ "$UPLOAD_SERVICE" = "reStream" ]; then
+		# This code takes a stream from a twitch.tv streamer, and re-streams it
+		# to a twitch.tv channel using RTMPS. The stream is re-muxed to a format
+		# that is compatible with RTMPS. The stream is also re-encoded to a
+		# format that is compatible with RTMPS.
+		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -O 2>/dev/null | ffmpeg -re -i - -ar $AUDIO_BITRATE -acodec $AUDIO_CODEC -vcodec copy -f $FILE_FORMAT "$RTMPS_URL""$RTMPS_STREAM_KEY" >/dev/null 2>&1
 	else
 		echo "$($CC) Invalid upload service specified: $UPLOAD_SERVICE" >&2
 		exit 1
