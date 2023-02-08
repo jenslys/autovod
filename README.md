@@ -7,10 +7,13 @@
 This script automates downloading and uploading Twitch.TV VODs to a selected upload provider.
 Broadcasts are downloaded in realtime, in the best quality available.
 
-Current available upload providers:
+Current available upload options:
 
-- **Youtube** (Needs no transcoding, so no file is stored on the disc. The stream is **directly** sent to YouTube)
+- **Youtube** (Needs no transcoding, so no file is stored on the disc.)
+  - **Direct Upload**
+  - **Re-stream**
 - **S3** (Currently needs transcoding, so the stream is **temporally stored** on the disc before uploading to S3)
+  - **Direct upload**
 
 The script checks every minute if the selected streamer is live, if the streamer is; it immediately starts uploading/downloading the stream.
 
