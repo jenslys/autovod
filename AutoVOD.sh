@@ -5,7 +5,7 @@ TIME_CLOCK='date +%H_%M_%S'
 CC='date +%H:%M:%S''|'
 
 # Function to get the value of the --name option
-fetch_args() {
+fetchArgs() {
 	while getopts ":n:" opt; do
 		case $opt in
 		*n)
@@ -16,7 +16,7 @@ fetch_args() {
 }
 
 # Call the function to get the value of the --name option
-fetch_args "$@"
+fetchArgs "$@"
 STREAMER_NAME=$name
 echo "$($CC) Selected streamer: $STREAMER_NAME"
 config_file="$STREAMER_NAME.config"
@@ -43,7 +43,7 @@ while true; do
 		eval "$original_var=\$$var"
 	done
 
-	if [[ "$API_CALLS" == "true" ]]; then
+	fetchMetadata() {
 		#? Fetching stream metadata
 		# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 		# Src code for this: https://github.com/jenslys/twitch-api-wrapper
@@ -73,14 +73,14 @@ while true; do
 			done
 			echo ""
 		fi
-	fi
+	}
 
-	#? Splitting the stream into parts
-	# Here we override the video_duration variable with the split_video_duration variable.
-	# We then compare the current date with the date from the last time we ran the script.
-	# if the date is the same, we add 1 to the current part variable.
-	# if the date is different, we reset the current part variable to 1.
-	if [[ "$SPLIT_INTO_PARTS" == "true" ]]; then
+	splitVideo() {
+		#? Splitting the stream into parts
+		# Here we override the video_duration variable with the splitVideo_duration variable.
+		# We then compare the current date with the date from the last time we ran the script.
+		# if the date is the same, we add 1 to the current part variable.
+		# if the date is different, we reset the current part variable to 1.
 		VIDEO_DURATION=$SPLIT_VIDEO_DURATION
 		if [[ "$($TIME_DATE)" == "$TIME_DATE_CHECK" ]]; then
 			# Increment the CURRENT_PART variable
@@ -92,6 +92,14 @@ while true; do
 		# Add "-Part_$CURRENT_PART" to the end of the VIDEO_TITLE variable and S3_OBJECT_KEY variable
 		VIDEO_TITLE="$VIDEO_TITLE""-""Part_""$CURRENT_PART"
 		S3_OBJECT_KEY="$S3_OBJECT_KEY""-""Part_""$CURRENT_PART"
+	}
+
+	if [[ "$API_CALLS" == "true" ]]; then
+		fetchMetadata # Fetch metadata from the API
+	fi
+
+	if [[ "$SPLIT_VIDEO" == "true" ]]; then
+		splitVideo # Split the video into parts
 	fi
 
 	STREAMLINK_OPTIONS="$STREAMLINK_QUALITY --hls-duration $VIDEO_DURATION $STREAMLINK_FLAGS -O --loglevel $STREAMLINK_LOGS" # https://streamlink.github.io/cli.html#twitch
