@@ -93,7 +93,7 @@ printf "${g}[$now] Install AWS CLI [Y/N]? ${c}\n"
 read -r answer
 if [ "$answer" = "Y" ]; then
   if ! [ -x "$(command -v aws)" ]; then
-    sudo $package_manager install awscli -y
+    sudo $package_manager $install_command awscli -y
   else
     printf "${g}[$now] AWS CLI is already installed. Skipping...${c}\n"
   fi
@@ -103,7 +103,7 @@ fi
 
 printf "${g}[$now] Installing AutoVOD${c}\n"
 if [ ! -d "./autovod" ]; then
-  git clone https://github.com/jenslys/autovod.git && cd autovod
+  git clone https://github.com/jenslys/autovod.git && cd autovod || exit
 else
   printf "${g}[$now] AutoVOD is already installed. Skipping...${c}\n"
 fi
