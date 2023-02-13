@@ -3,7 +3,7 @@
 now=$(date +"%T")
 g='\033[0;32m'
 c='\033[0m'
-log_file="installation.log"
+log_file="autovod_installation.log"
 
 # Log all the outputs of the script to the log file
 exec &> >(tee -a "$log_file")
