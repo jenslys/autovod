@@ -17,10 +17,14 @@ Current available upload options:
 - **S3** (Currently needs transcoding, so the stream is **temporally stored** on the disc before uploading to S3)
   - **Direct upload**
 
+> Are you a twitch streamer looking to achieve this without having to setup it up yourself? Contact me on discord: `ocean#3892`
 
 ## Installation
 
 ### Automatic Installation
+
+> **Note**
+> Only supports APT, YUM or DNF.
 
 ```bash
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/jenslys/autovod/master/install.sh)"
