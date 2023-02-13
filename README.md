@@ -246,7 +246,7 @@ There are multiple reasons this error can occur, check the following
 
 #### YouTube
 
-- That you have not reached your YouTube quota
+- That you have not reached your [YouTube quota limit](https://developers.google.com/youtube/v3/guides/quota_and_compliance_audits#:~:text=Projects%20that%20enable%20the%20YouTube,majority%20of%20our%20API%20users.)
 - That your YouTube credential files have not expired
 - You can check these by running `youtubeuploader --filename sample.mp4`
     then checking the output.
