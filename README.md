@@ -24,7 +24,7 @@ Current available upload options:
 ### Automatic Installation
 
 > **Note**
-> Only supports APT or YUM.
+> Only supports APT, YUM or DNF.
 
 ```bash
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/jenslys/autovod/master/install.sh)"
