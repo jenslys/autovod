@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC2059
 
 now=$(date +"%T")
 g='\033[0;32m'
