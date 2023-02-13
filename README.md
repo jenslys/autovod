@@ -4,8 +4,8 @@
 
 ![Releases](https://img.shields.io/github/v/release/jenslys/AutoVOD.svg)
 
-This script automates downloading and uploading Twitch.TV Streams to a selected upload provider.
-Broadcasts are downloaded in realtime, in the best quality available.
+This script automates downloading and uploading Twitch.TV Streams to a selected upload provider. <br>
+Broadcasts are downloaded in realtime, in the best quality available. <br>
 The script checks every minute if the selected streamer is live, if the streamer is; it immediately starts uploading the stream.
 
 Current available upload options:
