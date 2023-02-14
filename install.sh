@@ -18,7 +18,7 @@ if command -v apt-get &>/dev/null; then
 elif command -v yum &>/dev/null; then
   package_manager='yum'
   install_command='install'
-  update_command='update'
+  update_command='check-update'
   upgrade_command='upgrade'
 elif command -v dnf &>/dev/null; then
   package_manager='dnf'
