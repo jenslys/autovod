@@ -7,7 +7,10 @@
 This script automates downloading and uploading Twitch.TV Streams to a selected upload provider. <br>
 Broadcasts are downloaded in realtime, in the best quality available.
 
-The script checks every minute if the selected streamer is live, if the streamer is; it immediately starts uploading the stream.
+The script checks every minute if the selected streamer is live, if the streamer is; it immediately starts downloading and uploading the stream to YouTube.
+
+> **Warning**
+> It does not download and upload the **offical Twitch VOD** after the stream is finished, but rather uses streamlink to record and upload the stream in realtime.
 
 Current available upload options:
 
