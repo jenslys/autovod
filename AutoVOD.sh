@@ -125,7 +125,8 @@ while true; do
 	elif [ "$UPLOAD_SERVICE" = "s3" ]; then
 		# Saves the stream to a temp file stream.tmp
 		# Then when the stream is finished, uploads the file to S3
-		# https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html
+		# https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html
+
 		temp_file="stream.tmp"
 
 		if [ "$RE_ENCODE" == "true" ]; then
@@ -140,7 +141,7 @@ while true; do
 			streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >$temp_file
 		fi
 
-		aws s3api put-object --bucket $S3_BUCKET --key "$S3_OBJECT_KEY.mkv" --body $temp_file --endpoint-url $S3_ENDPOINT_URL >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
+		aws s3 cp $temp_file s3://$S3_BUCKET/$S3_OBJECT_KEY.mkv --expected-size $S3_EXECTED_SIZE --endpoint-url $S3_ENDPOINT_URL >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
 		wait             # Wait until its done uploading before deleting the file
 		rm -f $temp_file # Delete the temp file
 	elif [ "$UPLOAD_SERVICE" = "reStream" ]; then
