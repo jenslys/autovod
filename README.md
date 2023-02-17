@@ -19,6 +19,8 @@ Current available upload options:
   - **Re-stream**
 - **S3** (Currently needs transcoding, so the stream is **temporally stored** on the disc before uploading to S3)
   - **Direct upload**
+- **Local**
+  - **Local file** (Just downloads the stream to your machine)
 
 > Are you a twitch streamer looking to achieve this without having to setup it up yourself? Contact me on discord: `ocean#3892`
 
