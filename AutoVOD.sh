@@ -152,7 +152,7 @@ while true; do
 		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -O 2>/dev/null | ffmpeg -re -i - -ar $AUDIO_BITRATE -acodec $AUDIO_CODEC -vcodec copy -f $FILE_FORMAT "$RTMPS_URL""$RTMPS_STREAM_KEY" >/dev/null 2>&1
 	elif [ "$UPLOAD_SERVICE" = "local" ]; then
 		# If you want to save the stream locally to your machine
-		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >$LOCAL_FILENAME
+		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >"$LOCAL_FILENAME.mkv"
 	else
 		echo "$($CC) Invalid upload service specified: $UPLOAD_SERVICE" >&2
 		exit 1
