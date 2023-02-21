@@ -5,7 +5,7 @@ ARG	TWITCH_USER
 
 # Upgrade the system and install dependencies
 
-RUN	apk add --no-cache --upgrade python3 tar wget bash jq
+RUN	apk add --no-cache --upgrade python3 tar wget bash jq rclone
 RUN	python3 -m ensurepip
 
 RUN 	pip3 install --upgrade streamlink 

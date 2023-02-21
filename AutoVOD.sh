@@ -37,7 +37,7 @@ echo ""
 
 while true; do
 	# Store the orignal values
-	variables=("VIDEO_TITLE" "VIDEO_PLAYLIST" "VIDEO_DESCRIPTION" "S3_OBJECT_KEY")
+	variables=("VIDEO_TITLE" "VIDEO_PLAYLIST" "VIDEO_DESCRIPTION" "RCLONE_FILENAME")
 	for var in "${variables[@]}"; do
 		original_var=original_$var
 		eval "$original_var=\$$var"
@@ -49,7 +49,7 @@ while true; do
 		# Src code for this: https://github.com/jenslys/twitch-api-wrapper
 
 		echo "$($CC) Trying to fetch stream metadata"
-		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
+		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 "$API_URL""$STREAMER_NAME")
 		if [ "$json" = "Too many requests, please try again later." ]; then
 			echo "$($CC) $json"
 			echo ""
@@ -89,9 +89,10 @@ while true; do
 			# Reset CURRENT_PART to 1 if the current date is not equal to TIME_DATE_CHECK
 			CURRENT_PART=1
 		fi
-		# Add "-Part_$CURRENT_PART" to the end of the VIDEO_TITLE variable and S3_OBJECT_KEY variable
-		VIDEO_TITLE="$VIDEO_TITLE""-""Part_""$CURRENT_PART"
-		S3_OBJECT_KEY="$S3_OBJECT_KEY""-""Part_""$CURRENT_PART"
+		# Add "- Part_$CURRENT_PART" to the end of the VIDEO_TITLE variable, LOCAL_FILENAME variable and RCLONE_FILENAME variable
+		VIDEO_TITLE="$VIDEO_TITLE Part: $CURRENT_PART"
+		RCLONE_FILENAME="$RCLONE_FILENAME""-Part_""$CURRENT_PART"
+		LOCAL_FILENAME="$LOCAL_FILENAME""-Part_""$CURRENT_PART"
 	}
 
 	if [[ "$API_CALLS" == "true" ]]; then
@@ -104,7 +105,7 @@ while true; do
 
 	STREAMLINK_OPTIONS="$STREAMLINK_QUALITY --hls-duration $VIDEO_DURATION $STREAMLINK_FLAGS -O --loglevel $STREAMLINK_LOGS" # https://streamlink.github.io/cli.html#twitch
 
-	echo "$($CC) Checking twitch.tv/"$STREAMER_NAME "for a stream"
+	echo "$($CC) Checking twitch.tv/""$STREAMER_NAME" "for a stream"
 
 	if [ "$UPLOAD_SERVICE" = "youtube" ]; then
 		#? Check if requrired files exists
@@ -122,29 +123,30 @@ while true; do
 
 		# Pass the stream from streamlink to youtubeuploader and then send the file to the void (dev/null)
 		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
-	elif [ "$UPLOAD_SERVICE" = "s3" ]; then
+	elif [ "$UPLOAD_SERVICE" = "rclone" ]; then
 		# Saves the stream to a temp file stream.tmp
-		# Then when the stream is finished, uploads the file to S3
-		# https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html
+		# When the stream is finished, uploads the file to rclone
+		# then deletes the temp file
+		# https://rclone.org/commands/rclone_copyto/
 
-		temp_file="stream.tmp"
+		TEMP_FILE="stream.tmp"
 
 		if [ "$RE_ENCODE" == "true" ]; then
-			#? Re-encode the stream before uploading it to S3
+			#? Re-encode the stream before uploading it to rclone
 			# This is useful if you want to re-encode the stream to a different codec, quality or file size.
 			# Pipes the stream from streamlink to ffmpeg and then to the matroska temp file
 			# https://ffmpeg.org/ffmpeg.html
 
 			echo "$($CC) Re-encoding stream"
-			streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $temp_file >/dev/null 2>&1
+			streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $TEMP_FILE >/dev/null 2>&1
 		else
-			streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >$temp_file
+			streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >$TEMP_FILE
 		fi
 
-		aws s3 cp $temp_file s3://$S3_BUCKET/$S3_OBJECT_KEY.mkv --expected-size $S3_EXPECTED_SIZE --endpoint-url $S3_ENDPOINT_URL >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
+		rclone copyto $TEMP_FILE $RCLONE_REMOTE:$RCLONE_DIR/$RCLONE_FILENAME.$RCLONE_FILEEXT >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
 		wait             # Wait until its done uploading before deleting the file
-		rm -f $temp_file # Delete the temp file
-	elif [ "$UPLOAD_SERVICE" = "reStream" ]; then
+		rm -f $TEMP_FILE # Delete the temp file
+	elif [ "$UPLOAD_SERVICE" = "restream" ]; then
 		# This code takes a stream from a twitch.tv streamer, and re-streams it
 		# to a twitch.tv channel using RTMPS. The stream is re-muxed to a format
 		# that is compatible with RTMPS. The stream is also re-encoded to a
