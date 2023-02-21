@@ -127,7 +127,7 @@ while true; do
 		# Then when the stream is finished, uploads the file to S3
 		# https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html
 
-		temp_file="stream.tmp"
+		TEMP_FILE="stream.tmp"
 
 		if [ "$RE_ENCODE" == "true" ]; then
 			#? Re-encode the stream before uploading it to S3
@@ -136,14 +136,14 @@ while true; do
 			# https://ffmpeg.org/ffmpeg.html
 
 			echo "$($CC) Re-encoding stream"
-			streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $temp_file >/dev/null 2>&1
+			streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $TEMP_FILE >/dev/null 2>&1
 		else
-			streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >$temp_file
+			streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >$TEMP_FILE
 		fi
 
-		rclone copyto $temp_file $RCLONE_REMOTE:$RCLONE_DIR/$RCLONE_FILENAME.$RCLONE_FILEEXT >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
+		rclone copyto $TEMP_FILE $RCLONE_REMOTE:$RCLONE_DIR/$RCLONE_FILENAME.$RCLONE_FILEEXT >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
 		wait             # Wait until its done uploading before deleting the file
-		rm -f $temp_file # Delete the temp file
+		rm -f $TEMP_FILE # Delete the temp file
 	elif [ "$UPLOAD_SERVICE" = "reStream" ]; then
 		# This code takes a stream from a twitch.tv streamer, and re-streams it
 		# to a twitch.tv channel using RTMPS. The stream is re-muxed to a format
