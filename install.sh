@@ -89,16 +89,16 @@ else
   printf "${g}[$now] Skipping YouTubeUploader installation...${c}\n"
 fi
 
-printf "${g}[$now] Install AWS CLI [Y/N]? ${c}\n"
+printf "${g}[$now] Install Rclone [Y/N]? ${c}\n"
 read -r answer
 if [ "$answer" = "Y" ]; then
-  if ! [ -x "$(command -v aws)" ]; then
-    sudo $package_manager $install_command awscli -y
+  if ! [ -x "$(command -v rclone)" ]; then
+    sudo $package_manager $install_command rclone -y
   else
-    printf "${g}[$now] AWS CLI is already installed. Skipping...${c}\n"
+    printf "${g}[$now] Rclone is already installed. Skipping...${c}\n"
   fi
 else
-  printf "${g}[$now] Skipping AWS CLI installation...${c}\n"
+  printf "${g}[$now] Skipping Rclone installation...${c}\n"
 fi
 
 printf "${g}[$now] Installing AutoVOD${c}\n"

@@ -17,8 +17,8 @@ Current available upload options:
 - **Youtube** (Needs no transcoding, so no file is stored on the disc.)
   - **Direct Upload**
   - **Re-stream**
-- **S3** (Currently needs transcoding, so the stream is **temporally stored** on the disc before uploading to S3)
-  - **Direct upload**
+- **Rclone** (Currently needs transcoding, so the stream is **temporally stored** on the disc before uploading)
+  - **Direct upload** should work for all [providers](https://rclone.org/#providers) that Rclone supports
 - **Local**
   - **Local file** (Just downloads the stream to your machine)
 
@@ -77,16 +77,16 @@ mv youtubeuploader /usr/local/bin/youtubeuploader
 
 </details>
 
-#### AWS-CLI
+#### Rclone
 
-If you want to upload to an S3 Bucket
+If you want to upload to an any of the Rclone [providers](https://rclone.org/#providers)
 
 <details>
 <summary>Instructions</summary>
 <br>
 
 ```bash
-apt-get install awscli
+apt-get install rclone
 ```
 
 </details>
@@ -175,20 +175,14 @@ I am leaving open the GitHub issue regarding this, in case people want to discus
 
 </details>
 
-### S3 setup
+### Rclone setup
 
 <details>
 <summary>Instructions</summary>
 
-#### Refer to your S3-Provider on how to configure the AWS-CLI
+#### Refer to your provider on how to configure Rclone
 
-Common S3 providers:
-
-- [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/setup-aws-cli.html)
-- [Cloudflare R2](https://developers.cloudflare.com/r2/examples/aws-cli/)
-- [Wasabi S3](https://wasabi-support.zendesk.com/hc/en-us/articles/115001910791-How-do-I-use-AWS-CLI-with-Wasabi-)
-- [Google Cloud Storage](https://developers.cloudflare.com/r2/examples/aws-cli/)
-- [Backblaze B2](https://help.backblaze.com/hc/en-us/articles/360047779633-Quickstart-Guide-for-AWS-CLI-and-Backblaze-B2-Cloud-Storage)
+https://rclone.org/#providers
 
 </details>
 

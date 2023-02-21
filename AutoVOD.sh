@@ -141,7 +141,7 @@ while true; do
 			streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >$temp_file
 		fi
 
-		aws s3 cp $temp_file s3://$S3_BUCKET/$S3_OBJECT_KEY.mkv --expected-size $S3_EXPECTED_SIZE --endpoint-url $S3_ENDPOINT_URL >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
+		rclone copyto $temp_file $RCLONE_REMOTE:$RCLONE_DIR/$RCLONE_FILENAME.$RCLONE_FILEEXT >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
 		wait             # Wait until its done uploading before deleting the file
 		rm -f $temp_file # Delete the temp file
 	elif [ "$UPLOAD_SERVICE" = "reStream" ]; then
