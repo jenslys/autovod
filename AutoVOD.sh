@@ -89,9 +89,10 @@ while true; do
 			# Reset CURRENT_PART to 1 if the current date is not equal to TIME_DATE_CHECK
 			CURRENT_PART=1
 		fi
-		# Add "-Part_$CURRENT_PART" to the end of the VIDEO_TITLE variable and S3_OBJECT_KEY variable
+		# Add "-Part_$CURRENT_PART" to the end of the VIDEO_TITLE variable, LOCAL_FILENAME variable and RCLONE_FILENAME variable
 		VIDEO_TITLE="$VIDEO_TITLE""-""Part_""$CURRENT_PART"
-		S3_OBJECT_KEY="$S3_OBJECT_KEY""-""Part_""$CURRENT_PART"
+		RCLONE_FILENAME="$RCLONE_FILENAME""-""Part_""$CURRENT_PART"
+		LOCAL_FILENAME="$LOCAL_FILENAME""-""Part_""$CURRENT_PART"
 	}
 
 	if [[ "$API_CALLS" == "true" ]]; then
@@ -104,7 +105,7 @@ while true; do
 
 	STREAMLINK_OPTIONS="$STREAMLINK_QUALITY --hls-duration $VIDEO_DURATION $STREAMLINK_FLAGS -O --loglevel $STREAMLINK_LOGS" # https://streamlink.github.io/cli.html#twitch
 
-	echo "$($CC) Checking twitch.tv/"$STREAMER_NAME "for a stream"
+	echo "$($CC) Checking twitch.tv/""$STREAMER_NAME" "for a stream"
 
 	if [ "$UPLOAD_SERVICE" = "youtube" ]; then
 		#? Check if requrired files exists

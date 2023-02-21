@@ -254,9 +254,9 @@ There are multiple reasons this error can occur, check the following
 - You can check these by running `youtubeuploader --filename sample.mp4`
     then checking the output.
 
-#### S3
+#### Rclone
 
-- You have configured `aws` correctly
+- You have configured `rclone` correctly
 - You have inserted the correct variables inside the config.
 
 #### Server resource exhaustion
