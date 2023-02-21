@@ -17,10 +17,10 @@ Current available upload options:
 - **Youtube** (Needs no transcoding, so no file is stored on the disc.)
   - **Direct Upload**
   - **Re-stream**
-- **Rclone** (Currently needs transcoding, so the stream is **temporally stored** on the disc before uploading)
-  - **Direct upload** should work for all [providers](https://rclone.org/#providers) that Rclone supports
+- **Rclone** - *Should* work with supported all [providers](https://rclone.org/#providers) (Needs transcoding, so the stream is **temporally stored** on the disc before uploading)
+  - **Direct upload**
 - **Local**
-  - **Local file** (Just downloads the stream to your machine)
+  - **Local file** (Downloads the stream locally to your machine)
 
 > Are you a twitch streamer looking to achieve this without having to setup it up yourself? Contact me on discord: `ocean#3892`
 
@@ -29,7 +29,7 @@ Current available upload options:
 ### Automatic Installation
 
 > **Note**
-> Only supports APT, YUM or DNF.
+> Only supports APT, YUM or DNF. If you are using a different package manager, you will have to install the required packages manually.
 
 ```bash
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/jenslys/autovod/master/install.sh)"

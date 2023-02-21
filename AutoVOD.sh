@@ -37,7 +37,7 @@ echo ""
 
 while true; do
 	# Store the orignal values
-	variables=("VIDEO_TITLE" "VIDEO_PLAYLIST" "VIDEO_DESCRIPTION" "S3_OBJECT_KEY")
+	variables=("VIDEO_TITLE" "VIDEO_PLAYLIST" "VIDEO_DESCRIPTION" "RCLONE_FILENAME")
 	for var in "${variables[@]}"; do
 		original_var=original_$var
 		eval "$original_var=\$$var"
@@ -124,13 +124,14 @@ while true; do
 		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
 	elif [ "$UPLOAD_SERVICE" = "rclone" ]; then
 		# Saves the stream to a temp file stream.tmp
-		# Then when the stream is finished, uploads the file to S3
-		# https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html
+		# When the stream is finished, uploads the file to rclone
+		# then deletes the temp file
+		# https://rclone.org/commands/rclone_copyto/
 
 		TEMP_FILE="stream.tmp"
 
 		if [ "$RE_ENCODE" == "true" ]; then
-			#? Re-encode the stream before uploading it to S3
+			#? Re-encode the stream before uploading it to rclone
 			# This is useful if you want to re-encode the stream to a different codec, quality or file size.
 			# Pipes the stream from streamlink to ffmpeg and then to the matroska temp file
 			# https://ffmpeg.org/ffmpeg.html
