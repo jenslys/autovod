@@ -49,7 +49,7 @@ while true; do
 		# Src code for this: https://github.com/jenslys/twitch-api-wrapper
 
 		echo "$($CC) Trying to fetch stream metadata"
-		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 $API_URL)
+		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 "$API_URL""$STREAMER_NAME")
 		if [ "$json" = "Too many requests, please try again later." ]; then
 			echo "$($CC) $json"
 			echo ""
@@ -122,7 +122,7 @@ while true; do
 
 		# Pass the stream from streamlink to youtubeuploader and then send the file to the void (dev/null)
 		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
-	elif [ "$UPLOAD_SERVICE" = "s3" ]; then
+	elif [ "$UPLOAD_SERVICE" = "rclone" ]; then
 		# Saves the stream to a temp file stream.tmp
 		# Then when the stream is finished, uploads the file to S3
 		# https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html
