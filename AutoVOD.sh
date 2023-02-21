@@ -89,8 +89,8 @@ while true; do
 			# Reset CURRENT_PART to 1 if the current date is not equal to TIME_DATE_CHECK
 			CURRENT_PART=1
 		fi
-		# Add "-Part_$CURRENT_PART" to the end of the VIDEO_TITLE variable, LOCAL_FILENAME variable and RCLONE_FILENAME variable
-		VIDEO_TITLE="$VIDEO_TITLE""-""Part_""$CURRENT_PART"
+		# Add "- Part_$CURRENT_PART" to the end of the VIDEO_TITLE variable, LOCAL_FILENAME variable and RCLONE_FILENAME variable
+		VIDEO_TITLE="$VIDEO_TITLE""-""Part: ""$CURRENT_PART"
 		RCLONE_FILENAME="$RCLONE_FILENAME""-""Part_""$CURRENT_PART"
 		LOCAL_FILENAME="$LOCAL_FILENAME""-""Part_""$CURRENT_PART"
 	}
@@ -146,7 +146,7 @@ while true; do
 		rclone copyto $TEMP_FILE $RCLONE_REMOTE:$RCLONE_DIR/$RCLONE_FILENAME.$RCLONE_FILEEXT >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
 		wait             # Wait until its done uploading before deleting the file
 		rm -f $TEMP_FILE # Delete the temp file
-	elif [ "$UPLOAD_SERVICE" = "reStream" ]; then
+	elif [ "$UPLOAD_SERVICE" = "restream" ]; then
 		# This code takes a stream from a twitch.tv streamer, and re-streams it
 		# to a twitch.tv channel using RTMPS. The stream is re-muxed to a format
 		# that is compatible with RTMPS. The stream is also re-encoded to a
