@@ -67,7 +67,7 @@ while true; do
 			FETCHED_GAME=$(echo "$json" | jq -r '.stream_game')
 		fi
 
-		if [ "$STREAMER_TITLE" = null ]; then
+		if [ "$STREAMER_TITLE" = null ] || [ "$STREAMER_TITLE" = "initial_title" ]; then
 			echo "$($CC) Stream seems offline, not able to fetch metadata."
 			echo ""
 		else
