@@ -16,8 +16,17 @@ fetchArgs() {
 }
 
 # Call the function to get the value of the --name option
-fetchArgs "$@"
-STREAMER_NAME=$name
+if [ -f /.dockerenv ]; then
+	#? If the script is running inside a docker container
+	echo "$($CC) Docker detected"
+	STREAMER_NAME="$1"
+else
+	#? If the script is running on a host machine
+	echo "$($CC) Docker not detected"
+	fetchArgs "$@"
+	STREAMER_NAME=$name
+fi
+
 echo "$($CC) Selected streamer: $STREAMER_NAME"
 config_file="$STREAMER_NAME.config"
 

@@ -236,7 +236,7 @@ docker build --build-arg TWITCH_USER=<your twitch username> -t autovod .
 You can now run this container
 
 ```bash
-docker run -d autovod 
+docker run -d autovod <your twitch username>
 ```
 
 ## FAQ
