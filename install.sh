@@ -79,8 +79,8 @@ printf "${g}[$now] Install YouTubeUploader [Y/N]? ${c}\n"
 read -r answer
 if [ "$answer" = "Y" ]; then
   if [ ! -f "/usr/local/bin/youtubeuploader" ]; then
-    wget https://github.com/porjo/youtubeuploader/releases/download/23.01/youtubeuploader_23.01_Linux_x86_64.tar.gz
-    tar -xvf youtubeuploader_23.01_Linux_x86_64.tar.gz && rm youtubeuploader_23.01_Linux_x86_64.tar.gz
+    wget https://github.com/porjo/youtubeuploader/releases/download/23.02/youtubeuploader_23.02_Linux_x86_64.tar.gz
+    tar -xvf youtubeuploader_23.02_Linux_x86_64.tar.gz && rm youtubeuploader_23.02_Linux_x86_64.tar.gz
     mv youtubeuploader /usr/local/bin/youtubeuploader
   else
     printf "${g}[$now] YouTubeUploader is already installed. Skipping...${c}\n"
