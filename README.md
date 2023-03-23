@@ -194,6 +194,8 @@ We will create a dedicated config file for each steamer, in case are monitoring 
 
 #### Create config file
 
+> Note: Case sensitive, make sure to type the capitalization for the username the same on all inputs and files.
+
 ```bash
 cp default.config StreamerNameHere.config
 ```
