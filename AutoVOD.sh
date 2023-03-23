@@ -15,9 +15,17 @@ fetchArgs() {
 	done
 }
 
-# Call the function to get the value of the --name option
-fetchArgs "$@"
-STREAMER_NAME=$name
+if [ -f /.dockerenv ]; then
+	#? If the script is running inside a docker container
+	echo "$($CC) Docker detected"
+	STREAMER_NAME="$1"
+else
+	#? If the script is running on a host machine
+	echo "$($CC) Docker not detected"
+	fetchArgs "$@" # Get the value of the --name option
+	STREAMER_NAME=$name
+fi
+
 echo "$($CC) Selected streamer: $STREAMER_NAME"
 config_file="$STREAMER_NAME.config"
 
@@ -58,7 +66,7 @@ while true; do
 			FETCHED_GAME=$(echo "$json" | jq -r '.stream_game')
 		fi
 
-		if [ "$STREAMER_TITLE" = null ]; then
+		if [ "$FETCHED_TITLE" = null ] || [ "$FETCHED_TITLE" = "initial_title" ]; then
 			echo "$($CC) Stream seems offline, not able to fetch metadata."
 			echo ""
 		else
