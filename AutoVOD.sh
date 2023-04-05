@@ -8,8 +8,12 @@ CC='date +%H:%M:%S''|'
 fetchArgs() {
 	while getopts ":n:" opt; do
 		case $opt in
-		*n)
+		n)
 			name=$OPTARG
+			;;
+		*)
+			echo "Invalid option: -$OPTARG" >&2
+			exit 1
 			;;
 		esac
 	done
@@ -23,6 +27,10 @@ else
 	#? If the script is running on a host machine
 	echo "$($CC) Docker not detected"
 	fetchArgs "$@" # Get the value of the --name option
+	if [[ -z "$name" ]]; then
+		echo "$($CC) Missing required argument: -n STREAMER_NAME"
+		exit 1
+	fi
 	STREAMER_NAME=$name
 fi
 
@@ -40,7 +48,10 @@ fi
 echo "$($CC) Starting AutoVOD"
 echo "$($CC) Loading $config_file"
 # shellcheck source=$STREAMER_NAME.config
-source $config_file
+if ! source "$config_file"; then
+	echo "$($CC) Failed to load config file: $config_file"
+	exit 1
+fi
 echo ""
 
 while true; do
@@ -89,7 +100,13 @@ while true; do
 		# We then compare the current date with the date from the last time we ran the script.
 		# if the date is the same, we add 1 to the current part variable.
 		# if the date is different, we reset the current part variable to 1.
-		VIDEO_DURATION=$SPLIT_VIDEO_DURATION
+
+		if [[ -z "$SPLIT_VIDEO_DURATION" ]]; then
+			echo "$($CC) SPLIT_VIDEO_DURATION variable is not defined"
+			exit 1
+		fi
+
+		VIDEO_DURATION="$SPLIT_VIDEO_DURATION"
 		if [[ "$($TIME_DATE)" == "$TIME_DATE_CHECK" ]]; then
 			# Increment the CURRENT_PART variable
 			CURRENT_PART=$(($CURRENT_PART + 1))
@@ -130,7 +147,11 @@ while true; do
 		echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
 
 		# Pass the stream from streamlink to youtubeuploader and then send the file to the void (dev/null)
-		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
+		if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1; then
+			echo "$($CC) youtubeuploader failed uploading the stream"
+		fi
+		TIME_DATE_CHECK=$($TIME_DATE)
+
 	elif [ "$UPLOAD_SERVICE" = "rclone" ]; then
 		# Saves the stream to a temp file stream.tmp
 		# When the stream is finished, uploads the file to rclone
@@ -146,12 +167,19 @@ while true; do
 			# https://ffmpeg.org/ffmpeg.html
 
 			echo "$($CC) Re-encoding stream"
-			streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $TEMP_FILE >/dev/null 2>&1
+			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $TEMP_FILE >/dev/null 2>&1; then
+				echo "$($CC) ffmpeg failed re-encoding the stream"
+			fi
 		else
-			streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >$TEMP_FILE
+			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >$TEMP_FILE; then
+				echo "$($CC) streamlink failed saving the stream to disk"
+			fi
 		fi
 
-		rclone copyto $TEMP_FILE $RCLONE_REMOTE:$RCLONE_DIR/$RCLONE_FILENAME.$RCLONE_FILEEXT >/dev/null 2>&1 && TIME_DATE_CHECK=$($TIME_DATE)
+		if ! rclone copyto $TEMP_FILE $RCLONE_REMOTE:$RCLONE_DIR/$RCLONE_FILENAME.$RCLONE_FILEEXT >/dev/null 2>&1; then
+			echo "$($CC) rclone failed uploading the stream"
+		fi
+		TIME_DATE_CHECK=$($TIME_DATE)
 		wait             # Wait until its done uploading before deleting the file
 		rm -f $TEMP_FILE # Delete the temp file
 	elif [ "$UPLOAD_SERVICE" = "restream" ]; then
