@@ -1,33 +1,29 @@
-# Description
+<!--- IMPORTANT: If this PR addresses multiple unrelated issues, it will be closed until separated. -->
 
-Please include a summary of the changes and the related issue. Please also include relevant motivation and context. List any dependencies that are required for this change.
+### Description
 
-Fixes # (issue)
+<!--- REQUIRED: Describe what changed in detail -->
 
-## Type of change
+### Related Issues
 
-Please delete options that are not relevant.
+<!--- REQUIRED: Tag all related issues (e.g. * #123) -->
+<!--- If this PR resolves the issue please specify (e.g. * closes #123) -->
+<!--- If this PR addresses multiple issues, these issues must be related to one other -->
 
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] This change requires a documentation update
+* #ISSUE_NUMBER
 
-# How Has This Been Tested?
+### Checklist
 
-Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration
+<!--- Add things that are not yet implemented above -->
 
-- [ ] Test A
-- [ ] Test B
-
-**Test Configuration**:
-
-* AutoVOD Version:
-* OS:
-
-# Checklist:
-
-- [ ] I have performed a self-review of my code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] I have made corresponding changes to the documentation
+- [ ] The issues this PR addresses are related to each other
 - [ ] My changes generate no new warnings
+- [ ] My code builds and runs on my machine
+- [ ] My changes are all related to the related issue above
+- [ ] I documented my code
+
+### Screenshots
+
+<!--- REQUIRED: if issue is UI related -->
+
+<!--- IMPORTANT: Fill out all required fields. Otherwise we might close this PR temporarily -->
