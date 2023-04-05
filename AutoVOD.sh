@@ -45,7 +45,7 @@ echo ""
 
 while true; do
 	# Store the orignal values
-	variables=("VIDEO_TITLE" "VIDEO_PLAYLIST" "VIDEO_DESCRIPTION" "RCLONE_FILENAME" "LOCAL_FILENAME")
+	variables=("VIDEO_TITLE" "VIDEO_PLAYLIST" "VIDEO_DESCRIPTION" "RCLONE_FILENAME" "RCLONE_DIR" "LOCAL_FILENAME")
 	for var in "${variables[@]}"; do
 		original_var=original_$var
 		eval "$original_var=\$$var"
