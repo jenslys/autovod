@@ -208,6 +208,18 @@ Edit your newly created config
 nano StreamerNameHere.config
 ```
 
+##### Optional additional setup steps
+
+<details open>
+<summary>Stream metadata</summary>
+<br>
+
+Due to high usage on my public api, I have decided to remove the stream metadata feature from the main script. and make it an optional feature.
+
+If you want to add stream metadata to your video, you will need to deploy an api wrapper for the Twitch API. You can find the instructions on how to do that [here](https://github.com/jenslys/twitch-api-wrapper). Once you have the wrapper deployed, you will need to add the url in the API_URL field in the config file.
+
+</details>
+
 ### Start AutoVOD
 
 ```bash
