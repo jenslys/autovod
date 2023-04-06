@@ -5,7 +5,7 @@
 ![Releases](https://img.shields.io/github/v/release/jenslys/AutoVOD.svg)
 
 > **Warning**
-> Due to high usage on my public api, i will be shutting down the API on the 1st of March. This means if u have API_CALLS enabled, it will no longer work. if you want to keep fetching stream metadata you will have to deploy your own instance of the wrapper. Instructions can be found [here](autovod#optional-additional-setup-steps).
+> Due to high usage on my public api, i will be shutting down the API on the 1st of March. This means if u have API_CALLS enabled, it will no longer work. if you want to keep fetching stream metadata you will have to deploy your own instance of the wrapper. Instructions can be found [here](#optional-additional-setup-steps).
 
 This script automates downloading and uploading Twitch.TV Streams to a selected upload provider. <br>
 Broadcasts are downloaded in realtime, in the best quality available.
