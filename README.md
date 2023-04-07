@@ -13,7 +13,7 @@ Broadcasts are downloaded in realtime, in the best quality available.
 The script checks every minute if the selected streamer is live, if the streamer is; it immediately starts downloading and uploading the stream to YouTube.
 
 > **Note**
-> This does not download and upload the **offical Twitch VOD** after the stream is finished, but rather uses streamlink to record and upload the stream in realtime. So features like [Twitch Soundtrack](https://www.twitch.tv/broadcast/soundtrack) are not supported. If that is something you are looking for, you should check out [Twitch's manual export feature to YouTube](https://help.twitch.tv/s/article/video-on-demand?language=en_US#:~:text=your%20Video%20Producer.-,Export,-Your%20Twitch%20account). 
+> This does not download and upload the **offical Twitch VOD** after the stream is finished, but rather uses streamlink to record and upload the stream in realtime. So features like [Twitch Soundtrack](https://www.twitch.tv/broadcast/soundtrack) are not supported. If that is something you are looking for, you should check out [Twitch's manual export to YouTube feature](https://help.twitch.tv/s/article/video-on-demand?language=en_US#:~:text=your%20Video%20Producer.-,Export,-Your%20Twitch%20account). 
 
 Current available upload options:
 
