@@ -9,16 +9,11 @@ log_file="autovod_installation.log"
 # Log all the outputs of the script to the log file
 exec &> >(tee -a "$log_file")
 
-# Check if apt or yum is installed
+# Check if apt or dnf is installed
 if command -v apt-get &>/dev/null; then
   package_manager='apt-get'
   install_command='install'
   update_command='update'
-  upgrade_command='upgrade'
-elif command -v yum &>/dev/null; then
-  package_manager='yum'
-  install_command='install'
-  update_command='check-update'
   upgrade_command='upgrade'
 elif command -v dnf &>/dev/null; then
   package_manager='dnf'
@@ -37,16 +32,12 @@ printf "${g}[$now] Installing necessary Packages...${c}\n"
 
 # Package names for apt
 apt_packages=(npm wget curl git python3-pip tar jq)
-# Package names for yum
-yum_packages=(npm wget curl git python3-pip tar jq)
 # Package names for DNF
 dnf_packages=(npm wget curl git python3-pip tar jq)
 
 # Use the appropriate package array based on the detected package manager
 if [ "$package_manager" = "apt-get" ]; then
   packages=("${apt_packages[@]}")
-elif [ "$package_manager" = "yum" ]; then
-  packages=("${yum_packages[@]}")
 elif [ "$package_manager" = "dnf" ]; then
   packages=("${dnf_packages[@]}")
 fi
