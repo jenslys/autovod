@@ -155,7 +155,7 @@ while true; do
 		;;
 
 	"rclone")
-		# Saves the stream to a temp file stream.tmp
+		# Saves the stream to a temp file using mktemp
 		# When the stream is finished, uploads the file to rclone
 		# then deletes the temp file
 		# https://rclone.org/commands/rclone_copyto/
