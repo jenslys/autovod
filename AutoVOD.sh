@@ -190,7 +190,7 @@ while true; do
 			echo "$($CC) rclone failed uploading the stream"
 			if [ "$SAVE_ON_FAIL" == "true" ]; then
 				#? Save the temp file if rclone fails
-				NEW_TEMP_FILE=$(mktemp stream_failed.XXXXXX)
+				NEW_TEMP_FILE=$(mktemp stream_failed_"$STREAMER_NAME".XXXXXX)
 				mv $TEMP_FILE $NEW_TEMP_FILE # Rename the temp file
 				echo "$($CC) Temp file renamed to $NEW_TEMP_FILE"
 			fi
