@@ -132,10 +132,11 @@ while true; do
 
 	echo "$($CC) Checking twitch.tv/""$STREAMER_NAME" "for a stream"
 
-	if [ "$UPLOAD_SERVICE" = "youtube" ]; then
-		#? Check if requrired files exists
-		# The script wont work if these files are missing.
-		# So we check if they exists, if not we exit the script.
+	case "$UPLOAD_SERVICE" in
+	"youtube")
+		#? Check if required files exist
+		# The script won't work if these files are missing.
+		# So we check if they exist, if not we exit the script.
 		if test -f request.token -a -f client_secrets.json -a -f "$config_file"; then
 			echo "$($CC) All required files found"
 		else
@@ -151,8 +152,9 @@ while true; do
 			echo "$($CC) youtubeuploader failed uploading the stream"
 		fi
 		TIME_DATE_CHECK=$($TIME_DATE)
+		;;
 
-	elif [ "$UPLOAD_SERVICE" = "rclone" ]; then
+	"rclone")
 		# Saves the stream to a temp file stream.tmp
 		# When the stream is finished, uploads the file to rclone
 		# then deletes the temp file
@@ -180,22 +182,40 @@ while true; do
 			echo "$($CC) rclone failed uploading the stream"
 		fi
 		TIME_DATE_CHECK=$($TIME_DATE)
-		wait             # Wait until its done uploading before deleting the file
+		wait             # Wait until it's done uploading before deleting the file
 		rm -f $TEMP_FILE # Delete the temp file
-	elif [ "$UPLOAD_SERVICE" = "restream" ]; then
+		;;
+
+	"restream")
 		# This code takes a stream from a twitch.tv streamer, and re-streams it
 		# to a twitch.tv channel using RTMPS. The stream is re-muxed to a format
 		# that is compatible with RTMPS. The stream is also re-encoded to a
 		# format that is compatible with RTMPS.
-		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -O 2>/dev/null | ffmpeg -re -i - -ar $AUDIO_BITRATE -acodec $AUDIO_CODEC -vcodec copy -f $FILE_FORMAT "$RTMPS_URL""$RTMPS_STREAM_KEY" >/dev/null 2>&1
-	elif [ "$UPLOAD_SERVICE" = "local" ]; then
-		# If you want to save the stream locally to your machine
-		streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >"$LOCAL_FILENAME.$LOCAL_EXTENSION"
-	else
+		if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -O 2>/dev/null | ffmpeg -re -i - -ar $AUDIO_BITRATE -acodec $AUDIO_CODEC -vcodec copy -f $FILE_FORMAT "$RTMPS_URL""$RTMPS_STREAM_KEY" >/dev/null 2>&1; then
+			echo "$($CC) ffmpeg failed re-streaming the stream"
+		fi
+		;;
+
+	"local")
+		if [ "$RE_ENCODE" == "true" ]; then
+			echo "$($CC) Re-encoding stream"
+			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $LOCAL_FILENAME >/dev/null 2>&1; then
+				echo "$($CC) ffmpeg failed re-encoding the stream"
+			fi
+		else
+			# If you want to save the stream locally to your machine
+			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >"$LOCAL_FILENAME.$LOCAL_EXTENSION"; then
+				echo "$($CC) streamlink failed saving the stream to disk"
+			fi
+			TIME_DATE_CHECK=$($TIME_DATE)
+		fi
+		;;
+
+	*)
 		echo "$($CC) Invalid upload service specified: $UPLOAD_SERVICE" >&2
 		exit 1
-	fi
-
+		;;
+	esac
 	# Restore the original values
 	for var in "${variables[@]}"; do
 		eval "$var=\$original_$var"
