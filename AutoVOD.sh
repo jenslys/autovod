@@ -173,6 +173,7 @@ while true; do
 				echo "$($CC) ffmpeg failed re-encoding the stream"
 			fi
 		else
+			# Saves the file to disc to i can be later be uploaded by rclone
 			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >$TEMP_FILE; then
 				echo "$($CC) streamlink failed saving the stream to disk"
 			fi
