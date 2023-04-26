@@ -150,8 +150,11 @@ while true; do
 		# Pass the stream from streamlink to youtubeuploader and then send the file to the void (dev/null)
 		if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1; then
 			echo "$($CC) youtubeuploader failed uploading the stream"
+		else # If the upload was successful
+			TIME_DATE_CHECK=$($TIME_DATE)
+			echo "$($CC) Stream uploaded to youtube"
+			echo ""
 		fi
-		TIME_DATE_CHECK=$($TIME_DATE)
 		;;
 
 	"rclone")
@@ -171,20 +174,32 @@ while true; do
 			echo "$($CC) Re-encoding stream"
 			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $TEMP_FILE >/dev/null 2>&1; then
 				echo "$($CC) ffmpeg failed re-encoding the stream"
+			else
+				echo "$($CC) Stream re-encoded as $TEMP_FILE"
 			fi
 		else
 			# Saves the file to disc to i can be later be uploaded by rclone
 			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >$TEMP_FILE; then
 				echo "$($CC) streamlink failed saving the stream to disk"
+			else # If the stream was saved to disc
+				echo "$($CC) Stream saved to disk as $TEMP_FILE"
 			fi
 		fi
 
 		if ! rclone copyto $TEMP_FILE $RCLONE_REMOTE:$RCLONE_DIR/$RCLONE_FILENAME.$RCLONE_FILEEXT >/dev/null 2>&1; then
 			echo "$($CC) rclone failed uploading the stream"
+			if [ "$SAVE_ON_FAIL" == "true" ]; then
+				#? Save the temp file if rclone fails
+				NEW_TEMP_FILE=$(mktemp stream_failed.XXXXXX)
+				mv $TEMP_FILE $NEW_TEMP_FILE # Rename the temp file
+				echo "$($CC) Temp file renamed to $NEW_TEMP_FILE"
+			fi
+		else
+			echo "$($CC) Stream uploaded to rclone"
+			wait
+			rm -f $TEMP_FILE # Delete the temp file
+			TIME_DATE_CHECK=$($TIME_DATE)
 		fi
-		TIME_DATE_CHECK=$($TIME_DATE)
-		wait             # Wait until it's done uploading before deleting the file
-		rm -f $TEMP_FILE # Delete the temp file
 		;;
 
 	"restream")
@@ -194,6 +209,9 @@ while true; do
 		# format that is compatible with RTMPS.
 		if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -O 2>/dev/null | ffmpeg -re -i - -ar $AUDIO_BITRATE -acodec $AUDIO_CODEC -vcodec copy -f $FILE_FORMAT "$RTMPS_URL""$RTMPS_STREAM_KEY" >/dev/null 2>&1; then
 			echo "$($CC) ffmpeg failed re-streaming the stream"
+		else # If the stream was re-streamed
+			echo "$($CC) Stream re-streamed to $RTMPS_CHANNEL"
+			TIME_DATE_CHECK=$($TIME_DATE)
 		fi
 		;;
 
@@ -202,13 +220,23 @@ while true; do
 			echo "$($CC) Re-encoding stream"
 			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $LOCAL_FILENAME >/dev/null 2>&1; then
 				echo "$($CC) ffmpeg failed re-encoding the stream"
+			else # If the stream was re-encoded
+				echo "$($CC) Stream re-encoded as $LOCAL_FILENAME"
 			fi
 		else
 			# If you want to save the stream locally to your machine
 			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >"$LOCAL_FILENAME.$LOCAL_EXTENSION"; then
 				echo "$($CC) streamlink failed saving the stream to disk"
+				if [ "$SAVE_ON_FAIL" == "true" ]; then
+					#? Save the temp file if rclone fails
+					NEW_LOCAL_FILENAME="${LOCAL_FILENAME}_failed.$LOCAL_EXTENSION"
+					mv "$LOCAL_FILENAME.$LOCAL_EXTENSION" "$NEW_LOCAL_FILENAME" # Rename the local file
+					echo "$($CC) Local failed file renamed to $NEW_LOCAL_FILENAME"
+				fi
+			else
+				echo "$($CC) Stream saved to disk as $LOCAL_FILENAME.$LOCAL_EXTENSION"
+				TIME_DATE_CHECK=$($TIME_DATE)
 			fi
-			TIME_DATE_CHECK=$($TIME_DATE)
 		fi
 		;;
 
