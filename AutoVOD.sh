@@ -224,7 +224,7 @@ while true; do
 				echo "$($CC) Stream re-encoded as $LOCAL_FILENAME"
 			fi
 		else
-			# If you want to save the stream locally to your machine
+			# If you just want to save the stream locally to your machine
 			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >"$LOCAL_FILENAME.$LOCAL_EXTENSION"; then
 				echo "$($CC) streamlink failed saving the stream to disk"
 				if [ "$SAVE_ON_FAIL" == "true" ]; then
