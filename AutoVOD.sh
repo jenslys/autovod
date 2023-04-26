@@ -160,7 +160,7 @@ while true; do
 		# then deletes the temp file
 		# https://rclone.org/commands/rclone_copyto/
 
-		TEMP_FILE="stream.tmp"
+		TEMP_FILE=$(mktemp stream.XXXXXX)
 
 		if [ "$RE_ENCODE" == "true" ]; then
 			#? Re-encode the stream before uploading it to rclone
