@@ -25,8 +25,6 @@ Current available upload options:
 - **Local**
   - **Local file** (Downloads the stream locally to your machine)
 
-> Are you a twitch streamer looking to achieve this without having to setup it up yourself? Contact me on discord: `ocean#3892`
-
 ## Installation
 
 ### Automatic Installation
@@ -213,7 +211,7 @@ nano StreamerNameHere.config
 
 ##### Optional additional setup steps
 
-<details open>
+<details>
 <summary>Stream metadata</summary>
 <br>
 
