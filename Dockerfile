@@ -6,9 +6,9 @@ ARG	TWITCH_USER
 #* Upgrade the system and install dependencies
 RUN	apk add --no-cache --upgrade python3 tar wget bash jq rclone curl
 RUN	python3 -m ensurepip
-RUN 	pip3 install --upgrade streamlink 
-RUN 	wget --progress=dot:giga https://github.com/porjo/youtubeuploader/releases/download/23.02/youtubeuploader_23.02_Linux_x86_64.tar.gz
-RUN 	tar -xvf youtubeuploader_23.02_Linux_x86_64.tar.gz && rm youtubeuploader_23.02_Linux_x86_64.tar.gz &&\
+RUN pip3 install --upgrade streamlink 
+RUN wget --progress=dot:giga https://github.com/porjo/youtubeuploader/releases/download/23.02/youtubeuploader_23.02_Linux_x86_64.tar.gz
+RUN tar -xvf youtubeuploader_23.02_Linux_x86_64.tar.gz && rm youtubeuploader_23.02_Linux_x86_64.tar.gz &&\
 	mv youtubeuploader /usr/local/bin/youtubeuploader
 
 #* Copy the required files

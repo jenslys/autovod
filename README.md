@@ -4,16 +4,13 @@
 
 ![Releases](https://img.shields.io/github/v/release/jenslys/AutoVOD.svg)
 
-> **Warning**
-> Due to high usage on my public api, i will be shutting down the API on the 15th of April. This means if u have API_CALLS enabled, it will no longer work. if you want to keep fetching stream metadata you will have to deploy your own instance of the wrapper. Instructions can be found [here](#optional-additional-setup-steps).
-
 This script automates downloading and uploading Twitch.TV Streams to a selected upload provider. <br>
 Broadcasts are downloaded in realtime, in the best quality available.
 
 The script checks every minute if the selected streamer is live, if the streamer is; it immediately starts downloading and uploading the stream to YouTube.
 
 > **Note**
-> This does not download and upload the **offical Twitch VOD** after the stream is finished, but rather uses streamlink to record and upload the stream in realtime. So features like [separating differents audio track for the VOD](https://help.twitch.tv/s/article/soundtrack-audio-configuration?language=en_US) are not supported. If that is something you are looking for, you should check out [Twitch's manual export to YouTube feature](https://help.twitch.tv/s/article/video-on-demand?language=en_US#:~:text=your%20Video%20Producer.-,Export,-Your%20Twitch%20account). 
+> This does not download and upload the **official Twitch VOD** after the stream is finished, but rather uses streamlink to record and upload the stream in realtime. So features like [separating different audio track for the VOD](https://help.twitch.tv/s/article/soundtrack-audio-configuration?language=en_US) are not supported. If that is something you are looking for, you should check out [Twitch's manual export to YouTube feature](https://help.twitch.tv/s/article/video-on-demand?language=en_US#:~:text=your%20Video%20Producer.-,Export,-Your%20Twitch%20account). 
 
 Current available upload options:
 
@@ -133,7 +130,7 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 
 1. Create an account on [Google Developers Console](https://console.developers.google.com)
 1. Create a new project
-1. Enable the [YouTube Data API (APIs & Auth -> Libary)](https://console.cloud.google.com/apis/library/youtube.googleapis.com)
+1. Enable the [YouTube Data API (APIs & Auth -> Library)](https://console.cloud.google.com/apis/library/youtube.googleapis.com)
 1. Go to the [Consent Screen](https://console.cloud.google.com/apis/credentials/consent) section, setup an external application, fill in your information and add the user/s that are going to be using the app (Channel/s you are uploading videos to). Enable the **".../auth/youtube.upload"** scope. Then save.
 1. Go to the [Credentials](https://console.cloud.google.com/apis/api/youtube.googleapis.com/credentials) section, click "Create credentials" and select "OAuth client ID", select Application Type 'Web Application'. Add a 'Authorised redirect URI' of `http://localhost:8080/oauth2callback`
 1. Once created click the download (JSON) button in the list and save it as `client_secrets.json`
@@ -213,11 +210,21 @@ nano StreamerNameHere.config
 
 <details>
 <summary>Stream metadata</summary>
-<br>
 
-Due to high usage on my public api, I have decided to remove the stream metadata feature from the main script. and make it an optional feature.
+If you want to add stream metadata to your video, you will need to deploy an api wrapper for the Twitch API. You can find the instructions on how to do that [here](https://github.com/jenslys/twitch-api-wrapper). Once you have the wrapper deployed, you will need to add the url in the API_URL field in the config file and enable the API_CALLS field.
 
-If you want to add stream metadata to your video, you will need to deploy an api wrapper for the Twitch API. You can find the instructions on how to do that [here](https://github.com/jenslys/twitch-api-wrapper). Once you have the wrapper deployed, you will need to add the url in the API_URL field in the config file.
+</details>
+
+<details>
+<summary>Disable ads</summary>
+
+##### Fetching the OAuth token from Twitch
+Follow the instructions [here](https://streamlink.github.io/cli/plugins/twitch.html#authentication) to get your OAuth token.
+
+Then add the OAuth token: `--twitch-api-header=Authorization=OAuth YOURCODEHERE` to the `STREAMLINK_OPTIONS` field in the config file.
+
+##### Other options
+Other options can be found [here](https://streamlink.github.io/cli.html#twitch)
 
 </details>
 
@@ -276,7 +283,7 @@ There are multiple reasons this error can occur, check the following
 
 #### Server resource exhaustion
 
-- Uploading vods require alot of bandwith, check if the upload fails because your provider is limiting or cutting of the upload.
+- Uploading VODs require a lot of bandwidth, check if the upload fails because your provider is limiting or cutting of the upload.
 
 </details>
 
@@ -328,4 +335,4 @@ It should look something like this:
 
 ## License
 
-Licensed under the [GNU General Public License v3.0](LICENSE.md)
+Licensed under the [MIT License](LICENSE.md)

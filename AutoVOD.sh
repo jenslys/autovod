@@ -124,11 +124,11 @@ while true; do
 		fetchMetadata # Fetch metadata from the API
 	fi
 
-	if [[ "$SPLIT_VIDEO" == "true" ]]; then
+	if [[ "$SPLIT_INTO_PARTS" == "true" ]]; then
 		splitVideo # Split the video into parts
 	fi
 
-	STREAMLINK_OPTIONS="$STREAMLINK_QUALITY --hls-duration $VIDEO_DURATION $STREAMLINK_FLAGS -O --loglevel $STREAMLINK_LOGS" # https://streamlink.github.io/cli.html#twitch
+	STREAMLINK_OPTIONS="$STREAMLINK_QUALITY --hls-duration $VIDEO_DURATION -O --loglevel $STREAMLINK_LOGS" # https://streamlink.github.io/cli.html#twitch
 
 	echo "$($CC) Checking twitch.tv/""$STREAMER_NAME" "for a stream"
 
@@ -148,7 +148,7 @@ while true; do
 		echo '{"title":"'"$VIDEO_TITLE"'","privacyStatus":"'"$VIDEO_VISIBILITY"'","description":"'"$VIDEO_DESCRIPTION"'","playlistTitles":["'"${VIDEO_PLAYLIST}"'"]}' >/tmp/input.$STREAMER_NAME
 
 		# Pass the stream from streamlink to youtubeuploader and then send the file to the void (dev/null)
-		if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1; then
+		if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS "${STREAMLINK_FLAGS[@]}" | youtubeuploader -metaJSON /tmp/input.$STREAMER_NAME -filename - >/dev/null 2>&1; then
 			echo "$($CC) youtubeuploader failed uploading the stream"
 		else # If the upload was successful
 			TIME_DATE_CHECK=$($TIME_DATE)
@@ -172,14 +172,14 @@ while true; do
 			# https://ffmpeg.org/ffmpeg.html
 
 			echo "$($CC) Re-encoding stream"
-			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $TEMP_FILE >/dev/null 2>&1; then
+			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS "${STREAMLINK_FLAGS[@]}" --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $TEMP_FILE >/dev/null 2>&1; then
 				echo "$($CC) ffmpeg failed re-encoding the stream"
 			else
 				echo "$($CC) Stream re-encoded as $TEMP_FILE"
 			fi
 		else
 			# Saves the file to disc to i can be later be uploaded by rclone
-			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >$TEMP_FILE; then
+			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS "${STREAMLINK_FLAGS[@]}" -o - >$TEMP_FILE; then
 				echo "$($CC) streamlink failed saving the stream to disk"
 			else # If the stream was saved to disc
 				echo "$($CC) Stream saved to disk as $TEMP_FILE"
@@ -207,7 +207,7 @@ while true; do
 		# to a twitch.tv channel using RTMPS. The stream is re-muxed to a format
 		# that is compatible with RTMPS. The stream is also re-encoded to a
 		# format that is compatible with RTMPS.
-		if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -O 2>/dev/null | ffmpeg -re -i - -ar $AUDIO_BITRATE -acodec $AUDIO_CODEC -vcodec copy -f $FILE_FORMAT "$RTMPS_URL""$RTMPS_STREAM_KEY" >/dev/null 2>&1; then
+		if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS "${STREAMLINK_FLAGS[@]}" -O 2>/dev/null | ffmpeg -re -i - -ar $AUDIO_BITRATE -acodec $AUDIO_CODEC -vcodec copy -f $FILE_FORMAT "$RTMPS_URL""$RTMPS_STREAM_KEY" >/dev/null 2>&1; then
 			echo "$($CC) ffmpeg failed re-streaming the stream"
 		else # If the stream was re-streamed
 			echo "$($CC) Stream re-streamed to $RTMPS_CHANNEL"
@@ -218,14 +218,14 @@ while true; do
 	"local")
 		if [ "$RE_ENCODE" == "true" ]; then
 			echo "$($CC) Re-encoding stream"
-			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $LOCAL_FILENAME >/dev/null 2>&1; then
+			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS "${STREAMLINK_FLAGS[@]}" --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $LOCAL_FILENAME >/dev/null 2>&1; then
 				echo "$($CC) ffmpeg failed re-encoding the stream"
 			else # If the stream was re-encoded
 				echo "$($CC) Stream re-encoded as $LOCAL_FILENAME"
 			fi
 		else
 			# If you just want to save the stream locally to your machine
-			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS -o - >"$LOCAL_FILENAME.$LOCAL_EXTENSION"; then
+			if ! streamlink twitch.tv/$STREAMER_NAME $STREAMLINK_OPTIONS "${STREAMLINK_FLAGS[@]}" -o - >"$LOCAL_FILENAME.$LOCAL_EXTENSION"; then
 				echo "$($CC) streamlink failed saving the stream to disk"
 				if [ "$SAVE_ON_FAIL" == "true" ]; then
 					#? Save the temp file if rclone fails
