@@ -124,7 +124,7 @@ while true; do
 		fetchMetadata # Fetch metadata from the API
 	fi
 
-	if [[ "$SPLIT_VIDEO" == "true" ]]; then
+	if [[ "$SPLIT_INTO_PARTS" == "true" ]]; then
 		splitVideo # Split the video into parts
 	fi
 
