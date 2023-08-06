@@ -221,12 +221,12 @@ If you want to add stream metadata to your video, you will need to deploy an api
 <details>
 <summary>Disable ads</summary>
 
-##### Fetching the OAuth token
+##### Fetching the OAuth token from Twitch
 Follow the instructions [here](https://streamlink.github.io/cli/plugins/twitch.html#authentication) to get your OAuth token.
 
 Then add the OAuth token: `--twitch-api-header=Authorization=OAuth YOURCODEHERE` to the `STREAMLINK_OPTIONS` field in the config file.
 
-##### Oter options
+##### Other options
 Other options can be found [here](https://streamlink.github.io/cli.html#twitch)
 
 </details>
