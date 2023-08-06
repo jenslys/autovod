@@ -335,4 +335,4 @@ It should look something like this:
 
 ## License
 
-Licensed under the [GNU General Public License v3.0](LICENSE.md)
+Licensed under the [MIT License](LICENSE.md)
