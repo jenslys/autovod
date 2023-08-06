@@ -213,11 +213,21 @@ nano StreamerNameHere.config
 
 <details>
 <summary>Stream metadata</summary>
-<br>
 
-Due to high usage on my public api, I have decided to remove the stream metadata feature from the main script. and make it an optional feature.
+If you want to add stream metadata to your video, you will need to deploy an api wrapper for the Twitch API. You can find the instructions on how to do that [here](https://github.com/jenslys/twitch-api-wrapper). Once you have the wrapper deployed, you will need to add the url in the API_URL field in the config file and enable the API_CALLS field.
 
-If you want to add stream metadata to your video, you will need to deploy an api wrapper for the Twitch API. You can find the instructions on how to do that [here](https://github.com/jenslys/twitch-api-wrapper). Once you have the wrapper deployed, you will need to add the url in the API_URL field in the config file.
+</details>
+
+<details>
+<summary>Disable ads</summary>
+
+##### Fetching the OAuth token
+Follow the instructions [here](https://streamlink.github.io/cli/plugins/twitch.html#authentication) to get your OAuth token.
+
+Then add the OAuth token: `--twitch-api-header=Authorization=OAuth YOURCODEHERE` to the `STREAMLINK_OPTIONS` field in the config file.
+
+##### Oter options
+Other options can be found [here](https://streamlink.github.io/cli.html#twitch)
 
 </details>
 
