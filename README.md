@@ -13,7 +13,7 @@ Broadcasts are downloaded in realtime, in the best quality available.
 The script checks every minute if the selected streamer is live, if the streamer is; it immediately starts downloading and uploading the stream to YouTube.
 
 > **Note**
-> This does not download and upload the **offical Twitch VOD** after the stream is finished, but rather uses streamlink to record and upload the stream in realtime. So features like [separating differents audio track for the VOD](https://help.twitch.tv/s/article/soundtrack-audio-configuration?language=en_US) are not supported. If that is something you are looking for, you should check out [Twitch's manual export to YouTube feature](https://help.twitch.tv/s/article/video-on-demand?language=en_US#:~:text=your%20Video%20Producer.-,Export,-Your%20Twitch%20account). 
+> This does not download and upload the **official Twitch VOD** after the stream is finished, but rather uses streamlink to record and upload the stream in realtime. So features like [separating different audio track for the VOD](https://help.twitch.tv/s/article/soundtrack-audio-configuration?language=en_US) are not supported. If that is something you are looking for, you should check out [Twitch's manual export to YouTube feature](https://help.twitch.tv/s/article/video-on-demand?language=en_US#:~:text=your%20Video%20Producer.-,Export,-Your%20Twitch%20account). 
 
 Current available upload options:
 
@@ -133,7 +133,7 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 
 1. Create an account on [Google Developers Console](https://console.developers.google.com)
 1. Create a new project
-1. Enable the [YouTube Data API (APIs & Auth -> Libary)](https://console.cloud.google.com/apis/library/youtube.googleapis.com)
+1. Enable the [YouTube Data API (APIs & Auth -> Library)](https://console.cloud.google.com/apis/library/youtube.googleapis.com)
 1. Go to the [Consent Screen](https://console.cloud.google.com/apis/credentials/consent) section, setup an external application, fill in your information and add the user/s that are going to be using the app (Channel/s you are uploading videos to). Enable the **".../auth/youtube.upload"** scope. Then save.
 1. Go to the [Credentials](https://console.cloud.google.com/apis/api/youtube.googleapis.com/credentials) section, click "Create credentials" and select "OAuth client ID", select Application Type 'Web Application'. Add a 'Authorised redirect URI' of `http://localhost:8080/oauth2callback`
 1. Once created click the download (JSON) button in the list and save it as `client_secrets.json`
@@ -276,7 +276,7 @@ There are multiple reasons this error can occur, check the following
 
 #### Server resource exhaustion
 
-- Uploading vods require alot of bandwith, check if the upload fails because your provider is limiting or cutting of the upload.
+- Uploading VODs require a lot of bandwidth, check if the upload fails because your provider is limiting or cutting of the upload.
 
 </details>
 
