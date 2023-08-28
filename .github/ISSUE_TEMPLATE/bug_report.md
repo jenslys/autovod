@@ -21,7 +21,10 @@ Steps to reproduce the behavior:
 A clear and concise description of what you expected to happen.
 
 **Show logs**
-Screenshot of docker or pm2 logs
+Screenshot of docker or pm2 logs.
+
+**Config**
+Provide your full config.
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
