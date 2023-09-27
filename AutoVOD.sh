@@ -67,8 +67,18 @@ while true; do
 		# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 		# Src code for this: https://github.com/jenslys/twitch-api-wrapper
 
+		extract_base_domain() {
+			url=$1
+			base_domain=$(echo "$url" | awk -F[/:] '{print $4}')
+			echo "$base_domain"
+		}
+
+		BASE_API_URL=$(extract_base_domain "$API_URL")
+		FULL_API_URL=""https://""$BASE_API_URL""/info/""$STREAMER_NAME""
+		echo "$($CC) API URL: $FULL_API_URL"
+
 		echo "$($CC) Trying to fetch stream metadata"
-		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 "$API_URL""$STREAMER_NAME")
+		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 "$FULL_API_URL")
 		if [ "$json" = "Too many requests, please try again later." ]; then
 			echo "$($CC) $json"
 			echo ""
