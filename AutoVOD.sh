@@ -73,8 +73,7 @@ while true; do
 			echo "$base_domain"
 		}
 
-		BASE_API_URL=$(extract_base_domain "$API_URL")
-		FULL_API_URL="https://""$BASE_API_URL""/info/""$STREAMER_NAME"
+		FULL_API_URL="https://$(extract_base_domain "$API_URL")/info/$STREAMER_NAME"
 
 		echo "$($CC) Trying to fetch stream metadata"
 
