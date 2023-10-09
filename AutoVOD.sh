@@ -68,6 +68,7 @@ while true; do
 		# Src code for this: https://github.com/jenslys/twitch-api-wrapper
 
 		extract_base_domain() {
+			# Extract the base domain from the API_URL variable
 			url=$1
 			base_domain=$(echo "$url" | awk -F[/:] '{print $4}')
 			echo "$base_domain"
