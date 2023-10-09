@@ -4,21 +4,18 @@
 
 ![Releases](https://img.shields.io/github/v/release/jenslys/AutoVOD.svg)
 
-This script automates downloading and uploading Twitch.TV Streams to a selected upload provider. <br>
-Broadcasts are downloaded in realtime, in the best quality available.
-
-The script checks every minute if the selected streamer is live, if the streamer is; it immediately starts downloading and uploading the stream to YouTube.
+This script automates downloading and uploading [Twitch.TV](https://twitch.tv) streams to a selected upload provider. <br>
 
 > **Note**
-> This does not download and upload the **official Twitch VOD** after the stream is finished, but rather uses streamlink to record and upload the stream in realtime. So features like [separating different audio track for the VOD](https://help.twitch.tv/s/article/soundtrack-audio-configuration?language=en_US) are not supported. If that is something you are looking for, you should check out [Twitch's manual export to YouTube feature](https://help.twitch.tv/s/article/video-on-demand?language=en_US#:~:text=your%20Video%20Producer.-,Export,-Your%20Twitch%20account). 
+> This does not download and upload the **official Twitch VOD** after the stream is finished, but rather uses [streamlink](https://streamlink.github.io/) to record and upload the stream in realtime. So features like [separating different audio track for the VOD](https://help.twitch.tv/s/article/soundtrack-audio-configuration?language=en_US) are not supported. If that is something you are looking for, you should check out [Twitch's manual export to YouTube feature](https://help.twitch.tv/s/article/video-on-demand?language=en_US#:~:text=your%20Video%20Producer.-,Export,-Your%20Twitch%20account).
 
 Current available upload options:
 
 - **Youtube** (Needs no transcoding, so no file is stored on the disc.)
   - **Direct Upload**
   - **Re-stream**
-- **Rclone** - *Should* work with supported all [providers](https://rclone.org/#providers) (Needs transcoding, so the stream is **temporally stored** on the disc before uploading)
-  - **Direct upload**
+- **Rclone** - *Should* work with supported all [providers](https://rclone.org/#providers)
+  - **Direct upload** (Needs transcoding, so the stream is **temporally stored** on the disc before uploading)
 - **Local**
   - **Local file** (Downloads the stream locally to your machine)
 
@@ -27,7 +24,7 @@ Current available upload options:
 ### Automatic Installation
 
 > **Note**
-> Only supports APT, YUM or DNF. If you are using a different package manager, you will have to install the required packages manually.
+> Only supports APT or DNF. If you are using a different package manager, you will have to install the required packages manually.
 
 ```bash
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/jenslys/autovod/master/install.sh)"
