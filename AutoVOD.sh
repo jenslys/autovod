@@ -75,10 +75,16 @@ while true; do
 
 		BASE_API_URL=$(extract_base_domain "$API_URL")
 		FULL_API_URL=""https://""$BASE_API_URL""/info/""$STREAMER_NAME""
-		echo "$($CC) API URL: $FULL_API_URL"
 
 		echo "$($CC) Trying to fetch stream metadata"
+
 		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 "$FULL_API_URL")
+
+		if [ -z "$json" ]; then
+			echo "Error: Failed to fetch data from $FULL_API_URL"
+			exit 1
+		fi
+
 		if [ "$json" = "Too many requests, please try again later." ]; then
 			echo "$($CC) $json"
 			echo ""
