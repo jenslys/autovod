@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TIME_DATE='date +%m-%d-%y'
+TIME_DATE='date +%d-%m-%y'
 TIME_CLOCK='date +%H_%M_%S'
 CC='date +%H:%M:%S''|'
 
