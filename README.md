@@ -4,7 +4,7 @@
 
 ![Releases](https://img.shields.io/github/v/release/jenslys/AutoVOD.svg)
 
-This script automates downloading and uploading [Twitch.TV](https://twitch.tv) streams to a selected upload provider. <br>
+This script automates downloading and uploading [Twitch.TV](https://twitch.tv) or [Kick.com](https://kick.com) streams to a selected upload provider. <br>
 
 > **Note**
 > This does not download and upload the **official Twitch VOD** after the stream is finished, but rather uses [streamlink](https://streamlink.github.io/) to record and upload the stream in realtime. So features like [separating different audio track for the VOD](https://help.twitch.tv/s/article/soundtrack-audio-configuration?language=en_US) are not supported. If that is something you are looking for, you should check out [Twitch's manual export to YouTube feature](https://help.twitch.tv/s/article/video-on-demand?language=en_US#:~:text=your%20Video%20Producer.-,Export,-Your%20Twitch%20account).
@@ -99,6 +99,22 @@ apt-get install ffmpeg
 ```
 
 </details>
+
+#### Kick Plugin
+
+If you want to use kick.com as your source
+
+<details>
+<summary>Instructions</summary>
+<br>
+
+```bash
+wget --progress=dot:giga "https://raw.githubusercontent.com/nonvegan/streamlink-plugin-kick/master/kick.py" \
+	&& mv kick.py "${XDG_DATA_HOME:-${HOME}/.local/share}/streamlink/plugins/kick.py" || true
+```
+
+</details>
+
 
 #### AutoVOD
 
@@ -207,6 +223,8 @@ nano StreamerNameHere.config
 
 <details>
 <summary>Stream metadata</summary>
+
+**This currently only works if you are using Twitch.TV**
 
 If you want to add stream metadata to your video, you will need to deploy an api wrapper for the Twitch API. You can find the instructions on how to do that [here](https://github.com/jenslys/twitch-api-wrapper). Once you have the wrapper deployed, you will need to add the url in the API_URL field in the config file and enable the API_CALLS field.
 
