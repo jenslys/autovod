@@ -276,6 +276,12 @@ You can now run this container
 docker run -d autovod <Streamer Name Here>
 ```
 
+Or you can run both commands in one line
+
+```bash
+./buildRunDocker.sh <Streamer Name Here>
+```
+
 ## FAQ
 
 <details>
