@@ -1,5 +1,3 @@
-![AutoVOD Icon](https://cdn.lystad.io/autovod_icon.png)
-
 # AutoVOD
 
 ![Releases](https://img.shields.io/github/v/release/jenslys/AutoVOD.svg)

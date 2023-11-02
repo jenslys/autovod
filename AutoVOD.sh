@@ -63,7 +63,7 @@ while true; do
 	done
 
 	fetchMetadata() {
-		#? Fetching stream metadata
+		#? Fetching stream metadata (Only for twitch atm)
 		# Using my own API to wrap around twitch's API to fetch additional stream metadata.
 		# Src code for this: https://github.com/jenslys/twitch-api-wrapper
 
