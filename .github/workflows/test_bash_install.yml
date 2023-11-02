@@ -3,7 +3,7 @@ name: Test Bash Install Script
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
