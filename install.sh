@@ -92,6 +92,20 @@ else
   printf "${g}[$now] Skipping Rclone installation...${c}\n"
 fi
 
+printf "${g}[$now] Install Kick Plugin [Y/N]? ${c}\n"
+read -r answer
+if [ "$answer" = "Y" ]; then
+  if ! [ -x "$(command -v streamlink)" ]; then
+    printf "${g}[$now] Streamlink is missing. Skipping...${c}\n"
+  else
+    STREAMLINK_LOCATION=$(pip3 show streamlink | grep -E '^Location:' | awk '{print $2}') &&
+      PLUGINS_DIR="${STREAMLINK_LOCATION}/streamlink/plugins" &&
+      wget --progress=dot:giga -O "${PLUGINS_DIR}/kick.py" "https://raw.githubusercontent.com/nonvegan/streamlink-plugin-kick/master/kick.py"
+  fi
+else
+  printf "${g}[$now] Skipping Kick Plugin installation...${c}\n"
+fi
+
 printf "${g}[$now] Installing AutoVOD${c}\n"
 if [ ! -d "./autovod" ]; then
   git clone https://github.com/jenslys/autovod.git && cd autovod || exit

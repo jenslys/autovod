@@ -7,7 +7,7 @@
 This script automates downloading and uploading [Twitch.TV](https://twitch.tv) or [Kick.com](https://kick.com) streams to a selected upload provider. <br>
 
 > **Note**
-> This does not download and upload the **official Twitch VOD** after the stream is finished, but rather uses [streamlink](https://streamlink.github.io/) to record and upload the stream in realtime. So features like [separating different audio track for the VOD](https://help.twitch.tv/s/article/soundtrack-audio-configuration?language=en_US) are not supported. If that is something you are looking for, you should check out [Twitch's manual export to YouTube feature](https://help.twitch.tv/s/article/video-on-demand?language=en_US#:~:text=your%20Video%20Producer.-,Export,-Your%20Twitch%20account).
+> This does not download and upload the **official Twitch/Kick VOD** after the stream is finished, but rather uses [streamlink](https://streamlink.github.io/) to record and upload the stream in realtime. So features like [separating different audio track for the VOD](https://help.twitch.tv/s/article/soundtrack-audio-configuration?language=en_US) are not supported. If that is something you are looking for, you should check out [Twitch's manual export to YouTube feature](https://help.twitch.tv/s/article/video-on-demand?language=en_US#:~:text=your%20Video%20Producer.-,Export,-Your%20Twitch%20account).
 
 Current available upload options:
 
@@ -109,7 +109,9 @@ If you want to use kick.com as your source
 <br>
 
 ```bash
-wget --progress=dot:giga -O "/usr/lib/python3.10/site-packages/streamlink/plugins/kick.py" "https://raw.githubusercontent.com/nonvegan/streamlink-plugin-kick/master/kick.py"
+STREAMLINK_LOCATION=$(pip3 show streamlink | grep -E '^Location:' | awk '{print $2}') &&
+      PLUGINS_DIR="${STREAMLINK_LOCATION}/streamlink/plugins" &&
+      wget --progress=dot:giga -O "${PLUGINS_DIR}/kick.py" "https://raw.githubusercontent.com/nonvegan/streamlink-plugin-kick/master/kick.py"
 ```
 
 </details>
@@ -232,7 +234,8 @@ If you want to add stream metadata to your video, you will need to deploy an api
 <details>
 <summary>Disable ads</summary>
 
-##### Fetching the OAuth token from Twitch
+##### Fetching the OAuth token from 
+
 Follow the instructions [here](https://streamlink.github.io/cli/plugins/twitch.html#authentication) to get your OAuth token.
 
 Then add the OAuth token: `--twitch-api-header=Authorization=OAuth YOURCODEHERE` to the `STREAMLINK_OPTIONS` field in the config file.
@@ -245,7 +248,7 @@ Other options can be found [here](https://streamlink.github.io/cli.html#twitch)
 ### Start AutoVOD
 
 ```bash
-pm2 start AutoVOD.sh --name StreamerNameHere
+pm2 start AutoVOD.sh --name <Streamer Name Here>
 pm2 save
 ```
 
@@ -266,13 +269,13 @@ pm2 logs
 This script can be used inside a docker container. To build a container, first execute all [Setup-Steps](#setup), then build the image:
 
 ```bash
-docker build --build-arg TWITCH_USER=<your twitch username> -t autovod .
+docker build --build-arg USERNAME=<Streamer Name Here> -t autovod .
 ```
 
 You can now run this container
 
 ```bash
-docker run -d autovod <your twitch username>
+docker run -d autovod <Streamer Name Here>
 ```
 
 ## FAQ
