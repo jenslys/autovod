@@ -1,0 +1,27 @@
+name: Test Bash Install Script
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+    
+    - name: Set up Bash
+      run: |
+        sudo apt update
+        sudo apt install bash
+    
+    - name: Run Bash Script
+      run: ./install.sh
+      
+    - name: Test Script Output
+      run: |
+        ./install.sh
+        
