@@ -109,8 +109,7 @@ If you want to use kick.com as your source
 <br>
 
 ```bash
-wget --progress=dot:giga "https://raw.githubusercontent.com/nonvegan/streamlink-plugin-kick/master/kick.py" \
-	&& mv kick.py "${XDG_DATA_HOME:-${HOME}/.local/share}/streamlink/plugins/kick.py" || true
+wget --progress=dot:giga -O "/usr/lib/python3.10/site-packages/streamlink/plugins/kick.py" "https://raw.githubusercontent.com/nonvegan/streamlink-plugin-kick/master/kick.py"
 ```
 
 </details>
