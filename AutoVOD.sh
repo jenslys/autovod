@@ -19,29 +19,48 @@ fetchArgs() {
 	done
 }
 
-if [ -f /.dockerenv ]; then
-	#? If the script is running inside a docker container
-	echo "$($CC) Docker detected"
-	STREAMER_NAME="$1"
-else
-	#? If the script is running on a host machine
-	echo "$($CC) Docker not detected"
-	fetchArgs "$@" # Get the value of the --name option
-	if [[ -z "$name" ]]; then
-		echo "$($CC) Missing required argument: -n STREAMER_NAME"
-		exit 1
+# Function to check if the script is running inside a docker container
+checkDocker() {
+	if [[ -f /.dockerenv ]]; then
+		echo "$($CC) Docker detected"
+		STREAMER_NAME="$1"
+	else
+		echo "$($CC) Docker not detected"
+		fetchArgs "$@" # Get the value of the --name option
+		if [[ -z "$name" ]]; then
+			echo "$($CC) Missing required argument: -n STREAMER_NAME"
+			exit 1
+		fi
+		STREAMER_NAME=$name
 	fi
-	STREAMER_NAME=$name
+}
+
+checkDocker "$@"
+
+# Check if STREAMER_NAME is set
+if [[ -z "$STREAMER_NAME" ]]; then
+	echo "Error: STREAMER_NAME is not set" >&2
+	exit 1
 fi
 
 echo "$($CC) Selected streamer: $STREAMER_NAME"
 config_file="$STREAMER_NAME.config"
 
-#? Check if the config exists
-if test -f "$config_file"; then
-	echo "$($CC) Found config file"
-else
-	echo "$($CC) Config file is missing"
+# Function to check if the config exists
+checkConfig() {
+	if [[ -f "$config_file" ]]; then
+		echo "$($CC) Found config file"
+	else
+		echo "$($CC) Config file is missing"
+		exit 1
+	fi
+}
+
+checkConfig
+
+# Check if config_file is set
+if [[ -z "$config_file" ]]; then
+	echo "Error: config_file is not set" >&2
 	exit 1
 fi
 
@@ -79,6 +98,12 @@ determineSource() {
 
 determineSource
 
+# Check if STREAM_SOURCE_URL is set
+if [[ -z "$STREAM_SOURCE_URL" ]]; then
+	echo "Error: STREAM_SOURCE_URL is not set" >&2
+	exit 1
+fi
+
 while true; do
 	# Store the orignal values
 	variables=("VIDEO_TITLE" "VIDEO_PLAYLIST" "VIDEO_DESCRIPTION" "RCLONE_FILENAME" "RCLONE_DIR" "LOCAL_FILENAME")
@@ -103,13 +128,14 @@ while true; do
 
 		echo "$($CC) Trying to fetch stream metadata"
 
-		json=$(curl -s --retry 5 --retry-delay 2 --connect-timeout 30 "$FULL_API_URL")
-		if [ -z "$json" ]; then
+		json=$(curl -fs --retry 5 --retry-delay 2 --connect-timeout 30 "$FULL_API_URL")
+		if [[ -z "$json" ]]; then
 			echo "Error: Failed to fetch data from $FULL_API_URL"
-			exit 1
+			# Don't exit the script, instead return from the function or continue with the next iteration of the loop
+			return 1
 		fi
 
-		if [ "$json" = "Too many requests, please try again later." ]; then
+		if [[ "$json" == "Too many requests, please try again later." ]]; then
 			echo "$($CC) $json"
 			echo ""
 		else
@@ -117,7 +143,7 @@ while true; do
 			FETCHED_GAME=$(echo "$json" | jq -r '.stream_game')
 		fi
 
-		if [ "$FETCHED_TITLE" = null ] || [ "$FETCHED_TITLE" = "initial_title" ]; then
+		if [[ "$FETCHED_TITLE" == null ]] || [[ "$FETCHED_TITLE" == "initial_title" ]]; then
 			echo "$($CC) Stream seems offline, not able to fetch metadata."
 			echo ""
 		else
