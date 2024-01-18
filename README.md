@@ -4,7 +4,7 @@
 
 This script automates downloading and uploading [Twitch.TV](https://twitch.tv), [Kick.com](https://kick.com) or [YouTube Live](https://youtube.com/live) streams to a selected upload provider. <br>
 
-> **Note**
+> [!IMPORTANT]
 > This does not download and upload the **official Twitch/Kick/YouTube VOD** after the stream is finished, but rather uses [streamlink](https://streamlink.github.io/) to record and upload the stream in realtime. So features like [separating different audio track for the VOD](https://help.twitch.tv/s/article/soundtrack-audio-configuration?language=en_US) are not supported. If that is something you are looking for, you should check out [Twitch's manual export to YouTube feature](https://help.twitch.tv/s/article/video-on-demand?language=en_US#:~:text=your%20Video%20Producer.-,Export,-Your%20Twitch%20account).
 
 Current available upload options:
