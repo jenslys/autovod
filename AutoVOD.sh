@@ -82,9 +82,15 @@ determineSource
 while true; do
 	# Store the orignal values
 	variables=("VIDEO_TITLE" "VIDEO_PLAYLIST" "VIDEO_DESCRIPTION" "RCLONE_FILENAME" "RCLONE_DIR" "LOCAL_FILENAME")
+	TIME_DATE_CACHE=$($TIME_DATE) # We don't need to execute same command repeatedly
+	TIME_CLOCK_CACHE=$($TIME_CLOCK)
 	for var in "${variables[@]}"; do
 		original_var=original_$var
 		eval "$original_var=\$$var"
+		eval "replace_var=\$$var"
+		replace_var=${replace_var//TIME_DATE/$TIME_DATE_CACHE}
+		replace_var=${replace_var//TIME_CLOCK/$TIME_CLOCK_CACHE}
+		eval "$var=\$replace_var"
 	done
 
 	fetchMetadata() {
@@ -256,26 +262,40 @@ while true; do
 		;;
 
 	"local")
-		if [ "$RE_ENCODE" == "true" ]; then
-			echo "$($CC) Re-encoding stream"
-			if ! streamlink $STREAM_SOURCE_URL $STREAMLINK_OPTIONS "${STREAMLINK_FLAGS[@]}" --stdout | ffmpeg -i pipe:0 -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $LOCAL_FILENAME >/dev/null 2>&1; then
-				echo "$($CC) ffmpeg failed re-encoding the stream"
-			else # If the stream was re-encoded
-				echo "$($CC) Stream re-encoded as $LOCAL_FILENAME"
+		TEMP_FILE=$(mktemp stream.XXXXXX)
+
+		if ! streamlink $STREAM_SOURCE_URL $STREAMLINK_OPTIONS "${STREAMLINK_FLAGS[@]}" -o - >$TEMP_FILE; then
+			echo "$($CC) streamlink failed saving the stream"
+			if [ "$SAVE_ON_FAIL" == "true" ] && [ "$(stat -c %b $TEMP_FILE)" != "0" ]; then
+				#? Save the temp file if rclone fails
+				NEW_LOCAL_FILENAME="${LOCAL_FILENAME}_failed.$LOCAL_EXTENSION"
+				mv "$TEMP_FILE" "$NEW_LOCAL_FILENAME" # Rename the local file
+				echo "$($CC) Local failed file renamed to $NEW_LOCAL_FILENAME"
 			fi
+			rm -f $TEMP_FILE
 		else
-			# If you just want to save the stream locally to your machine
-			if ! streamlink $STREAM_SOURCE_URL $STREAMLINK_OPTIONS "${STREAMLINK_FLAGS[@]}" -o - >"$LOCAL_FILENAME.$LOCAL_EXTENSION"; then
-				echo "$($CC) streamlink failed saving the stream to disk"
-				if [ "$SAVE_ON_FAIL" == "true" ]; then
-					#? Save the temp file if rclone fails
-					NEW_LOCAL_FILENAME="${LOCAL_FILENAME}_failed.$LOCAL_EXTENSION"
-					mv "$LOCAL_FILENAME.$LOCAL_EXTENSION" "$NEW_LOCAL_FILENAME" # Rename the local file
-					echo "$($CC) Local failed file renamed to $NEW_LOCAL_FILENAME"
+			if [ "$RE_ENCODE" == "true" ]; then
+				echo "$($CC) Re-encoding stream"
+				if ! ffmpeg -i "$TEMP_FILE" -c:v $RE_ENCODE_CODEC -crf $RE_ENCODE_CRF -preset $RE_ECODE_PRESET -hide_banner -loglevel $RE_ENCODE_LOG -f matroska $LOCAL_FILENAME >/dev/null 2>&1; then
+					echo "$($CC) ffmpeg failed re-encoding the stream"
+				else # If the stream was re-encoded
+					echo "$($CC) Stream re-encoded as $LOCAL_FILENAME"
 				fi
 			else
-				echo "$($CC) Stream saved to disk as $LOCAL_FILENAME.$LOCAL_EXTENSION"
-				TIME_DATE_CHECK=$($TIME_DATE)
+				# If you just want to save the stream locally to your machine
+				if ! mv "$TEMP_FILE" "$LOCAL_FILENAME.$LOCAL_EXTENSION"; then
+					echo "$($CC) failed to move temp file to disk." # May be disk R/O mode?
+					if [ "$SAVE_ON_FAIL" == "true" ]; then
+						# Failed to move. so, we cannot do anything :(
+						echo "$($CC) Local failed file renamed to $TEMP_FILE"
+					else
+						rm -f $TEMP_FILE
+					fi
+				else
+					echo "$($CC) Stream saved to disk as $LOCAL_FILENAME.$LOCAL_EXTENSION"
+					rm -f $TEMP_FILE
+					TIME_DATE_CHECK=$($TIME_DATE)
+				fi
 			fi
 		fi
 		;;
