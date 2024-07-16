@@ -131,6 +131,9 @@ while true; do
 		else
 			FETCHED_TITLE=$(echo "$json" | jq -r '.stream_title')
 			FETCHED_GAME=$(echo "$json" | jq -r '.stream_game')
+
+			# URL encode the fetched game title
+			FETCHED_GAME_ENCODED=$(printf '%s' "$FETCHED_GAME" | jq -sRr @uri)
 		fi
 
 		if [ "$FETCHED_TITLE" = null ] || [ "$FETCHED_TITLE" = "initial_title" ]; then
@@ -144,7 +147,7 @@ while true; do
 			#? Replace the variables with the fetched metadata
 			for var in "${variables[@]}"; do
 				eval "$var=\${$var//\$STREAMER_TITLE/$FETCHED_TITLE}"
-				eval "$var=\${$var//\$STREAMER_GAME/$FETCHED_GAME}"
+				eval "$var=\${$var//\$STREAMER_GAME/$FETCHED_GAME_ENCODED}"
 			done
 			echo ""
 		fi
