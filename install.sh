@@ -70,8 +70,8 @@ printf "${g}[$now] Install YouTubeUploader [Y/N]? ${c}\n"
 read -r answer
 if [ "$answer" = "Y" ]; then
   if [ ! -f "/usr/local/bin/youtubeuploader" ]; then
-    wget https://github.com/porjo/youtubeuploader/releases/download/23.03/youtubeuploader_23.03_Linux_x86_64.tar.gz
-    tar -xvf youtubeuploader_23.03_Linux_x86_64.tar.gz && rm youtubeuploader_23.03_Linux_x86_64.tar.gz
+    wget https://github.com/porjo/youtubeuploader/releases/download/24.01/youtubeuploader_24.01_Linux_x86_64.tar.gz
+    tar -xvf youtubeuploader_24.01_Linux_x86_64.tar.gz && rm youtubeuploader_24.01_Linux_x86_64.tar.gz
     mv youtubeuploader /usr/local/bin/youtubeuploader
   else
     printf "${g}[$now] YouTubeUploader is already installed. Skipping...${c}\n"
@@ -90,20 +90,6 @@ if [ "$answer" = "Y" ]; then
   fi
 else
   printf "${g}[$now] Skipping Rclone installation...${c}\n"
-fi
-
-printf "${g}[$now] Install Kick Plugin [Y/N]? ${c}\n"
-read -r answer
-if [ "$answer" = "Y" ]; then
-  if ! [ -x "$(command -v streamlink)" ]; then
-    printf "${g}[$now] Streamlink is missing. Skipping...${c}\n"
-  else
-    STREAMLINK_LOCATION=$(pip3 show streamlink | grep -E '^Location:' | awk '{print $2}') &&
-      PLUGINS_DIR="${STREAMLINK_LOCATION}/streamlink/plugins" &&
-      wget --progress=dot:giga -O "${PLUGINS_DIR}/kick.py" "https://raw.githubusercontent.com/nonvegan/streamlink-plugin-kick/master/kick.py"
-  fi
-else
-  printf "${g}[$now] Skipping Kick Plugin installation...${c}\n"
 fi
 
 printf "${g}[$now] Installing AutoVOD${c}\n"

@@ -12,7 +12,7 @@ Current available upload options:
 - **Youtube** (Needs no transcoding, so no file is stored on the disc.)
   - **Direct Upload**
   - **Re-stream**
-- **Rclone** - *Should* work with supported all [providers](https://rclone.org/#providers)
+- **Rclone** - _Should_ work with supported all [providers](https://rclone.org/#providers)
   - **Direct upload** (Needs transcoding, so the stream is **temporally stored** on the disc before uploading)
 - **Local**
   - **Local file** (Downloads the stream locally to your machine)
@@ -98,23 +98,6 @@ apt-get install ffmpeg
 
 </details>
 
-#### Kick Plugin
-
-If you want to use kick.com as your source
-
-<details>
-<summary>Instructions</summary>
-<br>
-
-```bash
-STREAMLINK_LOCATION=$(pip3 show streamlink | grep -E '^Location:' | awk '{print $2}') &&
-      PLUGINS_DIR="${STREAMLINK_LOCATION}/streamlink/plugins" &&
-      wget --progress=dot:giga -O "${PLUGINS_DIR}/kick.py" "https://raw.githubusercontent.com/nonvegan/streamlink-plugin-kick/master/kick.py"
-```
-
-</details>
-
-
 #### AutoVOD
 
 ```bash
@@ -147,13 +130,14 @@ Set up your credentials to allow YouTubeUploader to upload videos to YouTube.
 1. Go to the [Credentials](https://console.cloud.google.com/apis/api/youtube.googleapis.com/credentials) section, click "Create credentials" and select "OAuth client ID", select Application Type 'Web Application'. Add a 'Authorised redirect URI' of `http://localhost:8080/oauth2callback`
 1. Once created click the download (JSON) button in the list and save it as `client_secrets.json`
 1. Getting token from YouTube:
-    1. Due to [recent changes](https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html#disallowed-oob) to the Google TOS, if you are running this utility for the first time and want to run it on a Headless server, you have to first run `youtubeuploader` on your local machine (Somewhere with a web browser)
 
-        ```bash
-        youtubeuploader -filename sample.mp4
-        ```
+   1. Due to [recent changes](https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html#disallowed-oob) to the Google TOS, if you are running this utility for the first time and want to run it on a Headless server, you have to first run `youtubeuploader` on your local machine (Somewhere with a web browser)
 
-    1. and then simply copy/move `request.token` and `client_secrets.json` to the remote host. Make sure these are placed inside the `autovod` folder.
+      ```bash
+      youtubeuploader -filename sample.mp4
+      ```
+
+   1. and then simply copy/move `request.token` and `client_secrets.json` to the remote host. Make sure these are placed inside the `autovod` folder.
 
 > **Note**
 > To be able to upload videos as either "Unlisted or Public" and upload multiple videos a day, you will have to request an [API audit](https://support.google.com/youtube/contact/yt_api_form) from YouTube. Without an audit your videos will be locked as private and you are limited to how many videos you can upload before you reach a quota.
@@ -170,6 +154,7 @@ I have applied for the audit twice (for two separate projects).
 Both times I was accepted fairly easily.
 
 Since this tool isn't very complex, I typed almost the same thing on all fields, along the lines of:
+
 > "I am going to upload a certain twitch user VODS to YouTube and need a higher quote because the streamer streams multiple times a week for x amount of hours. The tool is internal, so the only person that is authenticating through it is me. This is using Youtube Data API to upload to videos."
 
 I also linked/referenced this GitHub page (Don't know if that helped my case).
@@ -232,13 +217,14 @@ If you want to add stream metadata to your video, you will need to deploy an api
 <details>
 <summary>Disable ads</summary>
 
-##### Fetching the OAuth token from 
+##### Fetching the OAuth token from
 
 Follow the instructions [here](https://streamlink.github.io/cli/plugins/twitch.html#authentication) to get your OAuth token.
 
 Then add the OAuth token: `--twitch-api-header=Authorization=OAuth YOURCODEHERE` to the `STREAMLINK_OPTIONS` field in the config file.
 
 ##### Other options
+
 Other options can be found [here](https://streamlink.github.io/cli.html#twitch)
 
 </details>
@@ -295,7 +281,7 @@ There are multiple reasons this error can occur, check the following
 - That you have not reached your [YouTube quota limit](https://developers.google.com/youtube/v3/guides/quota_and_compliance_audits#:~:text=Projects%20that%20enable%20the%20YouTube,majority%20of%20our%20API%20users.)
 - That your YouTube credential files have not expired
 - You can check these by running `youtubeuploader --filename sample.mp4`
-    then checking the output.
+  then checking the output.
 
 #### Rclone
 
@@ -345,6 +331,7 @@ The following files are required for the script to work:
 It should look something like this:
 
 ![Screenshot](https://cdn.lystad.io/autovod_folder.jpeg)
+
 </details>
 
 ## Credit
