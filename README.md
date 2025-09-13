@@ -232,9 +232,14 @@ Other options can be found [here](https://streamlink.github.io/cli.html#twitch)
 ### Start AutoVOD
 
 ```bash
-pm2 start AutoVOD.sh --name <Streamer Name Here>
+# Name the PM2 process and pass the streamer name to the script
+pm2 start AutoVOD.sh --name <StreamerName> -- <StreamerName>
 pm2 save
 ```
+
+Notes:
+- If exactly one `*.config` (excluding `default.config`) exists in the folder, you can omit the streamer name and just run `pm2 start AutoVOD.sh --name <AnyName>`. The script will auto-select that config.
+- You can also pass the name via `-n`, e.g. `pm2 start AutoVOD.sh --name <StreamerName> -- -n <StreamerName>`.
 
 #### Check status
 
