@@ -1,4 +1,4 @@
-FROM alpine:3.17
+FROM alpine:3.22
 
 #* Define an arg variable
 ARG	TWITCH_USER
@@ -9,9 +9,9 @@ RUN apk add --no-cache --upgrade python3 tar wget bash jq rclone curl \
 	&& pip3 install --no-cache-dir --upgrade streamlink cloudscraper
 
 #* Install youtubeuploader
-RUN wget --progress=dot:giga https://github.com/porjo/youtubeuploader/releases/download/24.01/youtubeuploader_24.01_Linux_x86_64.tar.gz \
-	&& tar -xvf youtubeuploader_24.01_Linux_x86_64.tar.gz \
-	&& rm youtubeuploader_24.01_Linux_x86_64.tar.gz \
+RUN wget --progress=dot:giga https://github.com/porjo/youtubeuploader/releases/download/v1.25.5/youtubeuploader_1.25.5_Linux_amd64.tar.gz \
+	&& tar -xvf youtubeuploader_1.25.5_Linux_amd64.tar.gz \
+	&& rm youtubeuploader_1.25.5_Linux_amd64.tar.gz \
 	&& mv youtubeuploader /usr/local/bin/youtubeuploader
 
 #* Copy the required files
