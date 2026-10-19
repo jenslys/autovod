@@ -1,107 +1,163 @@
 #!/bin/bash
-# shellcheck disable=SC2059
+# AutoVOD 3.x installer - idempotent, supports apt and dnf (and warns on others).
+#
+#   sh -c "$(curl -fsSL https://raw.githubusercontent.com/jenslys/autovod/master/install.sh)"
+#
+# What it does
+#   1. installs the system packages AutoVOD needs (git, python3, venv, jq is NOT
+#      needed anymore, tar, wget, curl, ffmpeg, npm only if you want pm2)
+#   2. installs streamlink and, optionally, rclone/youtubeuploader
+#   3. clones/updates AutoVOD and installs it into its own virtualenv
+#
+# Everything is re-runnable: existing packages, binaries and the checkout are
+# detected and skipped instead of being reinstalled.
+set -Eeuo pipefail
 
 now=$(date +"%T")
 g='\033[0;32m'
+y='\033[0;33m'
 c='\033[0m'
-log_file="autovod_installation.log"
+log() { printf "${g}[%s] %s${c}\n" "$now" "$*"; }
+warn() { printf "${y}[%s] %s${c}\n" "$now" "$*"; }
 
-# Log all the outputs of the script to the log file
-exec &> >(tee -a "$log_file")
+REPO_URL="${AUTOVOD_REPO:-https://github.com/jenslys/autovod.git}"
+TARGET_DIR="${AUTOVOD_DIR:-$PWD/autovod}"
+YOUTUBEUPLOADER_VERSION="${YOUTUBEUPLOADER_VERSION:-1.25.5}"
 
-# Check if apt or dnf is installed
-if command -v apt-get &>/dev/null; then
-  package_manager='apt-get'
-  install_command='install'
-  update_command='update'
-  upgrade_command='upgrade'
-elif command -v dnf &>/dev/null; then
-  package_manager='dnf'
-  install_command='install'
-  update_command='check-update'
-  upgrade_command='upgrade'
+is_root() { [[ "${EUID:-$(id -u)}" -eq 0 ]]; }
+SUDO=""
+if ! is_root && command -v sudo >/dev/null 2>&1; then
+    SUDO="sudo"
+fi
+
+# --- package manager --------------------------------------------------------
+if command -v apt-get >/dev/null 2>&1; then
+    PM="apt-get"; PM_INSTALL="$SUDO apt-get install -y"; PM_UPDATE="$SUDO apt-get update -qq"
+elif command -v dnf >/dev/null 2>&1; then
+    PM="dnf"; PM_INSTALL="$SUDO dnf install -y"; PM_UPDATE="$SUDO dnf check-update -q || true"
+elif command -v pacman >/dev/null 2>&1; then
+    PM="pacman"; PM_INSTALL="$SUDO pacman -S --noconfirm"; PM_UPDATE="$SUDO pacman -Sy"
 else
-  printf "${g}[$now] Error: Could not find a supported package manager. Exiting...${c}\n"
-  exit 1
+    warn "unsupported package manager: install python3, python3-venv, pip, git, curl, wget and ffmpeg yourself"
+    PM=""
 fi
 
-printf "${g}[$now] Updating and upgrading packages...${c}\n"
-$package_manager -qq $update_command && $package_manager -qq $upgrade_command
+have() { command -v "$1" >/dev/null 2>&1; }
 
-printf "${g}[$now] Installing necessary Packages...${c}\n"
+if [[ -n "$PM" ]]; then
+    log "Updating package lists (no dist-upgrade, that is not our business)"
+    $PM_UPDATE || warn "package list update failed, continuing"
 
-# Package names for apt
-apt_packages=(npm wget curl git python3-pip tar jq)
-# Package names for DNF
-dnf_packages=(npm wget curl git python3-pip tar jq)
+    packages=(git curl wget python3 tar)
+    # Debian/Ubuntu call the venv module python3-venv, Fedora python3-pip provides it
+    if [[ "$PM" == "apt-get" ]]; then
+        packages+=(python3-venv python3-pip)
+    else
+        packages+=(python3-pip)
+    fi
+    if ! have ffmpeg; then
+        packages+=(ffmpeg)
+    fi
 
-# Use the appropriate package array based on the detected package manager
-if [ "$package_manager" = "apt-get" ]; then
-  packages=("${apt_packages[@]}")
-elif [ "$package_manager" = "dnf" ]; then
-  packages=("${dnf_packages[@]}")
+    for package in "${packages[@]}"; do
+        if [[ "$PM" == "apt-get" ]]; then
+            if dpkg -s "$package" >/dev/null 2>&1; then
+                log "$package already installed"
+                continue
+            fi
+        else
+            if rpm -q "$package" >/dev/null 2>&1; then
+                log "$package already installed"
+                continue
+            fi
+        fi
+        log "installing $package"
+        $PM_INSTALL "$package" || warn "could not install $package - continue without it"
+    done
 fi
 
-# Install the packages
-for package in "${packages[@]}"; do
-  dpkg -s "$package" &>/dev/null
-  if [ $? -eq 0 ]; then
-    printf "${g}[$now] $package already installed...${c}\n"
-  else
-    sudo $package_manager $install_command "$package" -y
-  fi
-done
-
-printf "${g}[$now] Installing PM2${c}\n"
-if ! [ -x "$(command -v pm2)" ]; then
-  npm install pm2 -g && pm2 startup
+# --- streamlink -------------------------------------------------------------
+log "Installing Streamlink into $TARGET_DIR/.venv"
+mkdir -p "$TARGET_DIR"
+if [[ ! -d "$TARGET_DIR/.venv" ]]; then
+    python3 -m venv "$TARGET_DIR/.venv" \
+        || warn "python3-venv is missing - install it and re-run this script"
+fi
+VENV_PY="$TARGET_DIR/.venv/bin/python3"
+if [[ -x "$VENV_PY" ]]; then
+    "$VENV_PY" -m pip install --upgrade pip >/dev/null
+    "$VENV_PY" -m pip install --upgrade streamlink
+    log "Streamlink $("$TARGET_DIR/.venv/bin/streamlink" --version 2>/dev/null | head -1) installed"
 else
-  printf "${g}[$now] PM2 is already installed. Skipping...${c}\n"
+    warn "no virtualenv created - falling back to 'pipx install streamlink' or a distro package"
+    if have streamlink; then
+        log "system streamlink found: $(streamlink --version)"
+    elif have pipx; then
+        pipx install streamlink
+    else
+        warn "no streamlink available - AutoVOD cannot record without it"
+    fi
 fi
 
-printf "${g}[$now] Installing Streamlink${c}\n"
-if ! [ -x "$(command -v streamlink)" ]; then
-  pip3 install --upgrade streamlink
+# --- optional binaries ------------------------------------------------------
+if have rclone; then
+    log "rclone already installed ($(rclone version | head -1))"
 else
-  printf "${g}[$now] Streamlink is already installed. Skipping...${c}\n"
+    if $PM_INSTALL rclone >/dev/null 2>&1; then
+        log "rclone installed"
+    else
+        warn "rclone not installed - run 'rclone config' yourself if you need it"
+    fi
 fi
 
-printf "${g}[$now] Install YouTubeUploader [Y/N]? ${c}\n"
-read -r answer
-if [ "$answer" = "Y" ]; then
-  if [ ! -f "/usr/local/bin/youtubeuploader" ]; then
-    wget https://github.com/porjo/youtubeuploader/releases/download/24.01/youtubeuploader_24.01_Linux_x86_64.tar.gz
-    tar -xvf youtubeuploader_24.01_Linux_x86_64.tar.gz && rm youtubeuploader_24.01_Linux_x86_64.tar.gz
-    mv youtubeuploader /usr/local/bin/youtubeuploader
-  else
-    printf "${g}[$now] YouTubeUploader is already installed. Skipping...${c}\n"
-  fi
+if have youtubeuploader; then
+    log "youtubeuploader already installed"
 else
-  printf "${g}[$now] Skipping YouTubeUploader installation...${c}\n"
+    printf "${y}[%s] Install youtubeuploader (needed for UPLOAD_SERVICE=youtube)? [y/N] ${c}\n" "$now"
+    read -r answer
+    if [[ "$answer" == [yY] ]]; then
+        case "$(uname -m)" in
+            x86_64|amd64) arch="amd64" ;;
+            aarch64|arm64) arch="arm64" ;;
+            armv7l) arch="arm" ;;
+            *) arch="" ;;
+        esac
+        if [[ -z "$arch" ]]; then
+            warn "unsupported architecture $(uname -m) - download youtubeuploader manually"
+        else
+            url="https://github.com/porjo/youtubeuploader/releases/download/v${YOUTUBEUPLOADER_VERSION}/youtubeuploader_${YOUTUBEUPLOADER_VERSION}_Linux_${arch}.tar.gz"
+            tmpdir=$(mktemp -d)
+            if curl -fsSL "$url" -o "$tmpdir/youtubeuploader.tar.gz"; then
+                tar -xzf "$tmpdir/youtubeuploader.tar.gz" -C "$tmpdir"
+                $SUDO install -m 0755 "$tmpdir/youtubeuploader" /usr/local/bin/youtubeuploader
+                log "youtubeuploader installed to /usr/local/bin/youtubeuploader"
+            else
+                warn "download failed: $url"
+            fi
+            rm -rf "$tmpdir"
+        fi
+    else
+        log "skipping youtubeuploader"
+    fi
 fi
 
-printf "${g}[$now] Install Rclone [Y/N]? ${c}\n"
-read -r answer
-if [ "$answer" = "Y" ]; then
-  if ! [ -x "$(command -v rclone)" ]; then
-    sudo $package_manager $install_command rclone -y
-  else
-    printf "${g}[$now] Rclone is already installed. Skipping...${c}\n"
-  fi
+# --- AutoVOD itself ---------------------------------------------------------
+if [[ -d "$TARGET_DIR/.git" ]]; then
+    log "updating existing checkout in $TARGET_DIR"
+    git -C "$TARGET_DIR" pull --ff-only || warn "git pull failed - resolve it manually"
 else
-  printf "${g}[$now] Skipping Rclone installation...${c}\n"
+    log "cloning $REPO_URL into $TARGET_DIR"
+    git clone --depth 1 "$REPO_URL" "$TARGET_DIR"
 fi
+chmod +x "$TARGET_DIR/AutoVOD.sh" "$TARGET_DIR/autovod.py" 2>/dev/null || true
 
-printf "${g}[$now] Installing AutoVOD${c}\n"
-if [ ! -d "./autovod" ]; then
-  git clone https://github.com/jenslys/autovod.git && cd autovod || exit
-else
-  printf "${g}[$now] AutoVOD is already installed. Skipping...${c}\n"
-fi
+log "Done."
+cat <<EOF
 
-printf "${g}[$now] Installing Sample video${c}\n"
-if [ ! -f "./sample.mp4" ]; then
-  wget -c -O sample.mp4 https://download.samplelib.com/mp4/sample-5s.mp4
-else
-  printf "${g}[$now] Sample video is already present. Skipping...${c}\n"
-fi
+Next steps
+  1. cd $TARGET_DIR
+  2. cp default.config YourStreamerName.config && nano YourStreamerName.config
+  3. ./autovod.py -n YourStreamerName --check     # preflight, tells you what is missing
+  4. ./autovod.py -n YourStreamerName --list-streams
+  5. pm2 start AutoVOD.sh --name YourStreamerName -- YourStreamerName
+EOF

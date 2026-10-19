@@ -1,0 +1,21 @@
+# build context hygiene - never ship credentials or recordings into an image
+.git
+.github
+legacy
+tests
+recordings
+logs
+tmp
+.autovod
+*.config
+!default.config
+client_secrets.json
+request.token
+*.token
+*.mkv
+*.mp4
+*.ts
+__pycache__
+*.pyc
+testrun.txt
+sample.mp4
